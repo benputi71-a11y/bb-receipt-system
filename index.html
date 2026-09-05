@@ -1,296 +1,329 @@
-<!doctype html>
+```html
+<!DOCTYPE html>
 <html lang="zh-Hant">
-
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>民宿電子收據系統｜沐光民宿二館</title>
+<title>沐光民宿二館｜電子收據</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
-
-body{
-  margin:0;
-  background:#f3f6fa;
-  color:#172033;
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Noto Sans TC",
-    "PingFang TC",
-    sans-serif;
-}
-
-header{
-  background:#174a8b;
-  color:#fff;
-  padding:20px;
-}
-
-.wrap{
-  max-width:1100px;
-  margin:auto;
-}
-
-h1{
-  margin:0 0 6px;
-  font-size:24px;
-}
-
-header p{
-  margin:0;
-  opacity:.9;
-}
-
-main{
-  padding:18px;
-}
-
-.card{
-  background:#fff;
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:18px;
-  box-shadow:0 4px 18px #0001;
-}
-
-h2{
-  margin:0 0 15px;
-  font-size:19px;
-}
-
-.form{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-}
-
-label{
-  font-size:14px;
-  font-weight:700;
-}
-
-input{
-  width:100%;
-  margin-top:6px;
-  padding:13px;
-  border:1px solid #cbd5e1;
-  border-radius:10px;
-  font-size:16px;
-}
-
-.full{
-  grid-column:1/-1;
-}
-
-.actions{
-  display:flex;
-  gap:10px;
-  margin-top:15px;
-}
-
-button{
-  border:0;
-  border-radius:12px;
-  padding:13px 18px;
-  font-size:16px;
-  font-weight:700;
-  cursor:pointer;
-}
-
-.primary{
-  background:#174a8b;
-  color:#fff;
-}
-
-.secondary{
-  background:#e8eef6;
-  color:#174a8b;
-}
-
-.preview-wrap{
-  overflow:auto;
-  background:#e9edf2;
-  border-radius:12px;
-  padding:10px;
-  text-align:center;
-}
-
-canvas{
-  max-width:100%;
-  height:auto;
-  background:#fff;
-  box-shadow:0 2px 8px #0002;
-}
-
-.note{
-  background:#f7f9fc;
-  border-left:4px solid #174a8b;
-  padding:12px;
-  line-height:1.65;
-  font-size:14px;
-}
-
-@media(max-width:650px){
-
-  .form{
-    grid-template-columns:1fr;
+  :root {
+    --blue: #397b9f;
   }
 
-  .full{
-    grid-column:auto;
+  * {
+    box-sizing: border-box;
   }
 
-  .actions{
-    flex-direction:column;
+  body {
+    margin: 0;
+    padding: 24px;
+    background: #f5f5f5;
+    color: #222;
+    font-family:
+      -apple-system,
+      BlinkMacSystemFont,
+      "Noto Sans TC",
+      "Microsoft JhengHei",
+      sans-serif;
   }
 
-  button{
-    width:100%;
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
   }
-}
+
+  h1 {
+    margin: 0 0 18px;
+    text-align: center;
+    color: var(--blue);
+    font-size: 28px;
+  }
+
+  .panel {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.05);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 16px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 700;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px 11px;
+    border: 1px solid #bbb;
+    border-radius: 7px;
+    background: #fff;
+    font-size: 16px;
+  }
+
+  .full {
+    grid-column: 1 / -1;
+  }
+
+  .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  button {
+    padding: 11px 18px;
+    border: 0;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  #downloadPng {
+    background: var(--blue);
+    color: #fff;
+  }
+
+  #downloadJpg {
+    background: #333;
+    color: #fff;
+  }
+
+  button:disabled {
+    opacity: .55;
+    cursor: wait;
+  }
+
+  .status {
+    min-height: 22px;
+    margin-top: 10px;
+    color: #555;
+    font-size: 14px;
+  }
+
+  .preview {
+    margin-top: 18px;
+    padding: 10px;
+    overflow: auto;
+    border-radius: 8px;
+    background: #eee;
+  }
+
+  #previewImg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  @media (max-width: 700px) {
+    body {
+      padding: 12px;
+    }
+
+    .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .full {
+      grid-column: auto;
+    }
+  }
 </style>
-
 </head>
 
 <body>
 
-<header>
-  <div class="wrap">
-    <h1>🏠 民宿電子收據系統</h1>
-    <p>PNG 測試版｜沐光民宿二館</p>
+<div class="wrap">
+
+  <h1>沐光民宿二館｜免用統一發票 電子收據</h1>
+
+  <div class="panel">
+
+    <div class="grid">
+
+      <div>
+        <label for="date">日期</label>
+        <input id="date" type="date">
+      </div>
+
+      <div>
+        <label for="nights">天數</label>
+        <input
+          id="nights"
+          type="number"
+          min="0"
+          step="1"
+          value="1"
+        >
+      </div>
+
+      <div>
+        <label for="price">單價</label>
+        <input
+          id="price"
+          type="number"
+          min="0"
+          step="1"
+          value="0"
+        >
+      </div>
+
+      <div>
+        <label for="taxId">統一編號</label>
+        <input
+          id="taxId"
+          type="text"
+          value="03796404"
+          maxlength="20"
+        >
+      </div>
+
+      <div>
+        <label for="orderNo">單號</label>
+        <input
+          id="orderNo"
+          type="text"
+          maxlength="30"
+        >
+      </div>
+
+      <div>
+        <label for="title">抬頭（可留空）</label>
+        <input
+          id="title"
+          type="text"
+          placeholder="留空則不顯示「抬頭：」"
+        >
+      </div>
+
+      <div class="full">
+        <label for="address">地址</label>
+        <input
+          id="address"
+          type="text"
+          placeholder="請輸入地址"
+        >
+      </div>
+
+      <div class="full">
+        <label for="item">品名摘要</label>
+        <input
+          id="item"
+          type="text"
+          value="住宿費"
+        >
+      </div>
+
+    </div>
+
+    <div class="buttons">
+
+      <button id="downloadPng" type="button">
+        下載 PNG
+      </button>
+
+      <button id="downloadJpg" type="button">
+        下載 JPG
+      </button>
+
+    </div>
+
+    <div id="status" class="status"></div>
+
+    <div class="preview">
+      <img
+        id="previewImg"
+        alt="收據預覽"
+      >
+    </div>
+
   </div>
-</header>
-
-
-<main class="wrap">
-
-<section class="card">
-
-<h2>① 輸入收據資料</h2>
-
-<div class="form">
-
-<label>
-  入住日期
-  <input id="date" type="date" value="2024-12-12">
-</label>
-
-<label>
-  住宿天數
-  <input id="nights" type="number" min="1" value="1">
-</label>
-
-<label>
-  單價
-  <input id="price" type="number" min="0" value="2000">
-</label>
-
-<label>
-  抬頭
-  <input id="title" value="臺灣高等法院">
-</label>
-
-<label>
-  統一編號
-  <input id="tax" value="03796404">
-</label>
-
-<label>
-  單號
-  <input id="order" value="0afb 867-2">
-</label>
-
-<label>
-  地址
-  <input id="address" value="">
-</label>
-
-<label class="full">
-  品名摘要
-  <input id="item" value="沐光 住宿公務保留房費">
-</label>
 
 </div>
-
-<div class="actions">
-
-<button class="primary" onclick="makeReceipt()">
-  產生預覽
-</button>
-
-<button class="secondary" onclick="resetForm()">
-  恢復測試資料
-</button>
-
-</div>
-
-</section>
-
-
-<section class="card">
-
-<h2>② 收據預覽</h2>
-
-<div class="note">
-  本版本直接使用原始收據模板尺寸，不再使用固定的
-  1499 × 1007 尺寸。新增文字以透明圖層方式合成，
-  最終下載 PNG；若檔案超過 1MB，系統會自動縮小。
-</div>
-
-<br>
-
-<div class="preview-wrap">
-  <canvas id="receipt"></canvas>
-</div>
-
-<div class="actions">
-
-<button class="primary" onclick="downloadPng()">
-  下載 PNG（1MB 以下）
-</button>
-
-</div>
-
-</section>
-
-</main>
 
 
 <script>
 
+"use strict";
+
+
 /* =========================================================
-   原始模板
+   模板設定
+   ========================================================= */
+
+const TEMPLATE = "receipt-template-1.png";
+
+/*
+  最新模板實際尺寸
+  2506 × 1436 px
+*/
+const W = 2506;
+const H = 1436;
+
+const TARGET_MAX_BYTES = 1024 * 1024;
+
+
+/* =========================================================
+   取得表單元素
+   ========================================================= */
+
+const $ = id => document.getElementById(id);
+
+const dateEl = $("date");
+const nightsEl = $("nights");
+const priceEl = $("price");
+const taxIdEl = $("taxId");
+const orderNoEl = $("orderNo");
+const titleEl = $("title");
+const addressEl = $("address");
+const itemEl = $("item");
+
+const previewImg = $("previewImg");
+const statusEl = $("status");
+
+let lastCanvas = null;
+
+
+/* =========================================================
+   載入模板
    ========================================================= */
 
 const img = new Image();
 
-img.src = "receipt-template-m2.png";
-
-const $ = id => document.getElementById(id);
+img.src = TEMPLATE;
 
 
 /* =========================================================
-   民國日期
+   日期
    ========================================================= */
 
-function rocDate(value){
+function setDefaultDate() {
 
-  if(!value){
-    return "";
-  }
+  const d = new Date();
 
-  const d =
-    new Date(value + "T00:00:00");
+  const yyyy = d.getFullYear();
 
-  return (
-    `${d.getFullYear()-1911} 年 ` +
-    `${d.getMonth()+1} 月 ` +
-    `${d.getDate()} 日`
-  );
+  const mm = String(
+    d.getMonth() + 1
+  ).padStart(2, "0");
+
+  const dd = String(
+    d.getDate()
+  ).padStart(2, "0");
+
+  dateEl.value =
+    `${yyyy}-${mm}-${dd}`;
 }
 
 
@@ -298,37 +331,76 @@ function rocDate(value){
    金額格式
    ========================================================= */
 
-function money(value){
+function money(value) {
 
-  return Number(value || 0)
-    .toLocaleString("zh-TW");
+  const n = Number(value) || 0;
+
+  return "$" + n.toLocaleString(
+    "en-US",
+    {
+      maximumFractionDigits: 0
+    }
+  );
 }
 
 
 /* =========================================================
-   文字
+   文字大小自動縮小
    ========================================================= */
 
-function drawText(
+function fitText(
+  ctx,
+  text,
+  maxWidth,
+  initialSize,
+  minSize = 14
+) {
+
+  let size = initialSize;
+
+  while (size > minSize) {
+
+    ctx.font =
+      `600 ${size}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
+
+    if (
+      ctx.measureText(text).width <= maxWidth
+    ) {
+      break;
+    }
+
+    size--;
+  }
+
+  return size;
+}
+
+
+/* =========================================================
+   置中文字
+   ========================================================= */
+
+function drawCentered(
   ctx,
   text,
   x,
   y,
-  size=18,
-  align="left",
-  weight="400"
-){
+  size,
+  maxWidth = Infinity
+) {
 
-  ctx.save();
+  const actualSize =
+    fitText(
+      ctx,
+      text,
+      maxWidth,
+      size
+    );
 
   ctx.font =
-    `${weight} ${size}px ` +
-    `"Noto Sans TC","PingFang TC",sans-serif`;
+    `600 ${actualSize}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
 
-  ctx.fillStyle = "#111";
-
-  ctx.textAlign = align;
-
+  ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
   ctx.fillText(
@@ -336,84 +408,29 @@ function drawText(
     x,
     y
   );
-
-  ctx.restore();
 }
 
 
 /* =========================================================
-   清除原模板深色文字
-   ---------------------------------------------------------
-   不使用 fillRect 白色方塊。
-   只處理深色像素，盡量保留灰色浮水印。
+   靠右文字
    ========================================================= */
 
-function eraseDarkText(
+function drawRight(
   ctx,
+  text,
   x,
   y,
-  width,
-  height,
-  threshold=120
-){
+  size
+) {
 
-  x = Math.max(0,Math.floor(x));
-  y = Math.max(0,Math.floor(y));
+  ctx.font =
+    `600 ${size}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
 
-  width =
-    Math.min(
-      Math.floor(width),
-      ctx.canvas.width - x
-    );
+  ctx.textAlign = "right";
+  ctx.textBaseline = "middle";
 
-  height =
-    Math.min(
-      Math.floor(height),
-      ctx.canvas.height - y
-    );
-
-  if(width <= 0 || height <= 0){
-    return;
-  }
-
-  const imageData =
-    ctx.getImageData(
-      x,
-      y,
-      width,
-      height
-    );
-
-  const data =
-    imageData.data;
-
-  for(let i=0;i<data.length;i+=4){
-
-    const r=data[i];
-    const g=data[i+1];
-    const b=data[i+2];
-
-    /*
-      只有真正偏黑的文字才處理。
-      灰色浮水印盡量保留。
-    */
-
-    if(
-      r < threshold &&
-      g < threshold &&
-      b < threshold
-    ){
-
-      data[i]   = 255;
-      data[i+1] = 255;
-      data[i+2] = 255;
-      data[i+3] = 255;
-
-    }
-  }
-
-  ctx.putImageData(
-    imageData,
+  ctx.fillText(
+    text,
     x,
     y
   );
@@ -421,477 +438,443 @@ function eraseDarkText(
 
 
 /* =========================================================
-   建立透明文字圖層
+   建立收據
    ========================================================= */
 
-function createOverlay(){
+function buildCanvas() {
 
-  const canvas =
-    document.createElement("canvas");
-
-  canvas.width =
-    img.naturalWidth;
-
-  canvas.height =
-    img.naturalHeight;
-
-  return canvas;
-}
-
-
-/* =========================================================
-   產生收據
-   ========================================================= */
-
-function makeReceipt(){
-
-  if(
+  if (
     !img.complete ||
     !img.naturalWidth
-  ){
+  ) {
 
-    img.onload =
-      makeReceipt;
-
-    return;
+    throw new Error(
+      "模板圖片尚未載入。請確認 receipt-template-1.png 與 index.html 在同一層。"
+    );
   }
 
 
   /*
-    非常重要：
-
-    直接使用模板實際尺寸。
-    不再寫死 1499 × 1007。
+    ---------------------------------------------------------
+    第一層：模板原圖
+    ---------------------------------------------------------
   */
 
-  const W =
-    img.naturalWidth;
-
-  const H =
-    img.naturalHeight;
-
-
   const canvas =
-    $("receipt");
+    document.createElement("canvas");
 
   canvas.width = W;
   canvas.height = H;
 
-
   const ctx =
-    canvas.getContext("2d");
+    canvas.getContext(
+      "2d",
+      { alpha: true }
+    );
 
 
   /*
-    清空後重新放入原始模板。
+    完整保留新的空白模板
   */
 
-  ctx.clearRect(
+  ctx.drawImage(
+    img,
     0,
     0,
     W,
     H
   );
 
-  ctx.drawImage(
-    img,
+
+  /*
+    ---------------------------------------------------------
+    第二層：透明 Overlay
+    ---------------------------------------------------------
+  */
+
+  const overlay =
+    document.createElement("canvas");
+
+  overlay.width = W;
+  overlay.height = H;
+
+  const octx =
+    overlay.getContext(
+      "2d",
+      { alpha: true }
+    );
+
+  octx.clearRect(
     0,
-    0
+    0,
+    W,
+    H
+  );
+
+  octx.fillStyle = "#111";
+
+
+  /* =======================================================
+     上方資訊區
+     ======================================================= */
+
+  /*
+    日期
+    新模板表格上緣約為 Y=392。
+    日期放在上方空白區中央。
+  */
+
+  drawCentered(
+    octx,
+    dateEl.value || "",
+    1253,
+    150,
+    30,
+    500
   );
 
 
   /*
-    建立透明文字圖層。
+    ---------------------------------------------------------
+    抬頭 / 地址
+    ---------------------------------------------------------
+
+    兩者使用完全相同的 X 起點。
   */
 
-  const overlay =
-    createOverlay();
+  const infoX = 80;
 
-  const octx =
-    overlay.getContext("2d");
+  const titleY = 230;
+  const addressY = 275;
 
-
-  /* =======================================================
-     取得資料
-     ======================================================= */
-
-  const date =
-    $("date").value;
-
-  const nights =
-    Number(
-      $("nights").value || 1
-    );
-
-  const price =
-    Number(
-      $("price").value || 0
-    );
-
-  const total =
-    nights * price;
 
   const title =
-    $("title").value.trim();
+    titleEl.value.trim();
 
-  const tax =
-    $("tax").value.trim();
+  if (title) {
 
-  const order =
-    $("order").value.trim();
+    const text =
+      "抬頭：" + title;
 
-  const address =
-    $("address").value.trim();
+    const size =
+      fitText(
+        octx,
+        text,
+        1080,
+        29,
+        16
+      );
 
-  const item =
-    $("item").value.trim();
+    octx.font =
+      `600 ${size}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
 
+    octx.textAlign = "left";
+    octx.textBaseline = "middle";
 
-  /* =======================================================
-     日期
-     ======================================================= */
-
-  eraseDarkText(
-    ctx,
-    350,
-    72,
-    300,
-    50
-  );
-
-  drawText(
-    octx,
-    rocDate(date),
-    500,
-    94,
-    18,
-    "center"
-  );
-
-
-  /* =======================================================
-     抬頭
-     -------------------------------------------------------
-     與地址 X 起點完全相同。
-     ======================================================= */
-
-  eraseDarkText(
-    ctx,
-    45,
-    105,
-    480,
-    40
-  );
-
-  if(title){
-
-    drawText(
-      octx,
-      `抬頭：${title}`,
-      60,
-      124,
-      18,
-      "left"
+    octx.fillText(
+      text,
+      infoX,
+      titleY
     );
-
   }
 
 
-  /* =======================================================
-     統一編號
-     -------------------------------------------------------
-     labelX / colonX / valueX 固定。
-     ======================================================= */
+  /*
+    地址
+  */
 
-  eraseDarkText(
-    ctx,
-    570,
-    105,
-    300,
-    35
+  const address =
+    addressEl.value.trim();
+
+  const addressText =
+    "地址：" + address;
+
+  const addressSize =
+    fitText(
+      octx,
+      addressText,
+      1080,
+      29,
+      16
+    );
+
+  octx.font =
+    `600 ${addressSize}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
+
+  octx.textAlign = "left";
+  octx.textBaseline = "middle";
+
+  octx.fillText(
+    addressText,
+    infoX,
+    addressY
   );
 
-  const labelX = 600;
-  const colonX = 680;
-  const valueX = 700;
 
-  const numberY1 = 124;
-  const numberY2 = 157;
+  /* =======================================================
+     統一編號 / 單號
+     ======================================================= */
+
+  /*
+    兩行的：
+    
+    標籤
+    冒號
+    數值
+
+    全部固定 X。
+
+    產生：
+
+    統一編號： 03796404
+    單   號： 0afb867-2
+  */
+
+  const labelX = 1550;
+  const colonX = 1685;
+  const valueX = 1720;
+
+  const taxY = 230;
+  const orderY = 275;
 
 
-  drawText(
-    octx,
+  octx.font =
+    `600 28px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
+
+  octx.textAlign = "left";
+  octx.textBaseline = "middle";
+
+
+  octx.fillText(
     "統一編號",
     labelX,
-    numberY1,
-    18,
-    "left"
+    taxY
   );
 
-  drawText(
-    octx,
+  octx.fillText(
     "：",
     colonX,
-    numberY1,
-    18,
-    "left"
+    taxY
   );
 
-  drawText(
-    octx,
-    tax,
+  octx.fillText(
+    taxIdEl.value.trim(),
     valueX,
-    numberY1,
-    18,
-    "left"
+    taxY
   );
 
 
-  /* =======================================================
-     地址
-     ======================================================= */
-
-  eraseDarkText(
-    ctx,
-    45,
-    135,
-    500,
-    35
-  );
-
-  drawText(
-    octx,
-    address
-      ? `地址：${address}`
-      : "地址：",
-    60,
-    157,
-    18,
-    "left"
-  );
-
-
-  /* =======================================================
-     單號
-     -------------------------------------------------------
-     與統一編號完全使用相同 X。
-     ======================================================= */
-
-  eraseDarkText(
-    ctx,
-    570,
-    135,
-    300,
-    35
-  );
-
-  drawText(
-    octx,
+  octx.fillText(
     "單   號",
     labelX,
-    numberY2,
-    18,
-    "left"
+    orderY
   );
 
-  drawText(
-    octx,
+  octx.fillText(
     "：",
     colonX,
-    numberY2,
-    18,
-    "left"
+    orderY
   );
 
-  drawText(
-    octx,
-    order,
+  octx.fillText(
+    orderNoEl.value.trim(),
     valueX,
-    numberY2,
-    18,
-    "left"
+    orderY
   );
 
 
   /* =======================================================
-     品名
+     金額計算
      ======================================================= */
 
-  eraseDarkText(
-    ctx,
-    60,
-    230,
-    285,
-    52
-  );
+  const nights =
+    Math.max(
+      0,
+      Number(nightsEl.value) || 0
+    );
 
-  drawText(
+  const unitPrice =
+    Math.max(
+      0,
+      Number(priceEl.value) || 0
+    );
+
+  const subtotal =
+    nights * unitPrice;
+
+
+  /* =======================================================
+     表格座標
+     ======================================================= */
+
+  /*
+    新模板實際主要欄線：
+
+    品名摘要：
+    X 約 49 ～ 962
+
+    天數：
+    X 約 962 ～ 1254
+
+    單價：
+    X 約 1254 ～ 1519
+
+    總價：
+    X 約 1519 ～ 1829
+
+    備註：
+    X 約 1829 ～ 2465
+  */
+
+
+  const itemCenterX = 505;
+  const nightsCenterX = 1108;
+  const priceCenterX = 1386;
+  const totalRightX = 1805;
+
+
+  /*
+    第一筆明細列中心
+
+    表頭底線約 Y=507
+    第一列底線約 Y=620
+
+    所以中心約 Y=564
+  */
+
+  const firstRowY = 564;
+
+
+  /*
+    品名
+  */
+
+  const item =
+    itemEl.value.trim() || "住宿費";
+
+  drawCentered(
     octx,
     item,
-    203,
-    248,
-    17,
-    "center"
+    itemCenterX,
+    firstRowY,
+    30,
+    820
   );
 
 
-  /* =======================================================
-     日期小字
-     ======================================================= */
+  /*
+    品名下面附日期
+  */
 
-  eraseDarkText(
-    ctx,
-    90,
-    252,
-    230,
-    30
-  );
-
-  drawText(
+  drawCentered(
     octx,
-    date
-      ? `《${date.slice(5).replace("-","/")}》`
-      : "",
-    203,
-    270,
-    16,
-    "center"
+    dateEl.value || "",
+    itemCenterX,
+    firstRowY + 34,
+    20,
+    820
   );
 
 
-  /* =======================================================
-     住宿天數
-     ======================================================= */
+  /*
+    天數
+  */
 
-  eraseDarkText(
-    ctx,
-    370,
-    230,
-    85,
-    52
-  );
-
-  drawText(
+  drawCentered(
     octx,
     String(nights),
-    411,
-    257,
-    18,
-    "center"
+    nightsCenterX,
+    firstRowY,
+    30,
+    180
   );
 
 
-  /* =======================================================
-     單價
-     ======================================================= */
+  /*
+    單價
 
-  eraseDarkText(
-    ctx,
-    475,
-    230,
-    105,
-    52
-  );
+    不顯示 $，
+    因為模板欄位名稱已經是「單價」。
+  */
 
-  drawText(
+  drawCentered(
     octx,
-    `$ ${money(price)}`,
-    525,
-    257,
-    17,
-    "center"
+    Number(unitPrice).toLocaleString("en-US"),
+    priceCenterX,
+    firstRowY,
+    30,
+    220
   );
 
 
-  /* =======================================================
-     第一列小計
-     ======================================================= */
+  /*
+    總價
+  */
 
-  eraseDarkText(
-    ctx,
-    590,
-    230,
-    125,
-    52
-  );
-
-  drawText(
+  drawRight(
     octx,
-    `$ ${money(total)}`,
-    654,
-    257,
-    17,
-    "center"
-  );
-
-
-  /* =======================================================
-     ===以下空白===
-     ======================================================= */
-
-  eraseDarkText(
-    ctx,
-    55,
-    295,
-    180,
+    money(subtotal),
+    totalRightX,
+    firstRowY,
     30
   );
 
 
   /* =======================================================
-     下方小計
+     小計
      ======================================================= */
 
-  eraseDarkText(
-    ctx,
-    640,
-    505,
-    80,
-    32
-  );
+  /*
+    新模板：
 
-  drawText(
+    第一條粗線約 Y=1053
+    小計 / 折扣 / 總計區域
+
+    小計中心約 Y=1110
+  */
+
+  drawRight(
     octx,
-    `$${money(total)}`,
-    685,
-    522,
-    17,
-    "center"
+    money(subtotal),
+    totalRightX,
+    1110,
+    30
   );
 
 
   /* =======================================================
      折扣
-     -------------------------------------------------------
-     目前尚未建立折扣輸入欄，
-     因此保留模板原有「折扣」文字。
      ======================================================= */
 
+  /*
+    目前系統沒有折扣輸入欄，
+    因此折扣固定為 $0。
+  */
 
-  /* =======================================================
-     下方總計
-     ======================================================= */
-
-  eraseDarkText(
-    ctx,
-    640,
-    590,
-    80,
-    32
-  );
-
-  drawText(
+  drawRight(
     octx,
-    `$${money(total)}`,
-    685,
-    607,
-    17,
-    "center"
+    "$0",
+    totalRightX,
+    1225,
+    30
   );
 
 
   /* =======================================================
-     最後才把透明文字圖層合成
+     總計
+     ======================================================= */
+
+  drawRight(
+    octx,
+    money(subtotal),
+    totalRightX,
+    1338,
+    30
+  );
+
+
+  /* =======================================================
+     將透明 Overlay 合成到模板
      ======================================================= */
 
   ctx.drawImage(
@@ -900,194 +883,327 @@ function makeReceipt(){
     0
   );
 
+
+  return canvas;
 }
 
 
 /* =========================================================
-   Canvas → PNG Blob
+   預覽
    ========================================================= */
 
-function canvasToBlob(canvas){
+function showPreview() {
 
-  return new Promise(resolve => {
+  try {
 
-    canvas.toBlob(
-      blob => resolve(blob),
+    const canvas =
+      buildCanvas();
+
+    lastCanvas = canvas;
+
+    previewImg.src =
+      canvas.toDataURL(
+        "image/png"
+      );
+
+    statusEl.textContent =
+      "預覽已更新。";
+
+  } catch (error) {
+
+    statusEl.textContent =
+      error.message;
+  }
+}
+
+
+/* =========================================================
+   Canvas → Blob
+   ========================================================= */
+
+function blobFromCanvas(
+  canvas,
+  type,
+  quality
+) {
+
+  return new Promise(
+    (resolve, reject) => {
+
+      canvas.toBlob(
+        blob => {
+
+          if (blob) {
+
+            resolve(blob);
+
+          } else {
+
+            reject(
+              new Error(
+                "瀏覽器無法產生圖片。"
+              )
+            );
+          }
+
+        },
+        type,
+        quality
+      );
+
+    }
+  );
+}
+
+
+/* =========================================================
+   PNG 控制 1 MB
+   ========================================================= */
+
+async function makePngUnder1MB() {
+
+  let canvas =
+    lastCanvas || buildCanvas();
+
+  let blob =
+    await blobFromCanvas(
+      canvas,
       "image/png"
     );
 
-  });
 
-}
+  /*
+    如果原始 PNG 已經 <= 1 MB
+    直接使用原尺寸。
+  */
 
+  if (
+    blob.size <= TARGET_MAX_BYTES
+  ) {
 
-/* =========================================================
-   下載 PNG
-   ---------------------------------------------------------
-   最大 1MB
-   ========================================================= */
-
-async function downloadPng(){
-
-  const source =
-    $("receipt");
-
-  const MAX_SIZE =
-    1024 * 1024;
-
-
-  if(
-    !source.width ||
-    !source.height
-  ){
-
-    makeReceipt();
-
+    return {
+      blob,
+      scale: 1
+    };
   }
 
 
   /*
-    先嘗試原始尺寸。
+    PNG 沒有 quality 參數。
+
+    所以超過 1 MB 時，
+    自動縮小圖片。
   */
 
-  let blob =
-    await canvasToBlob(source);
-
-  let exportCanvas =
-    source;
+  let scale = 0.95;
 
 
-  /*
-    超過 1MB 才縮小。
-  */
-
-  if(blob.size > MAX_SIZE){
-
-    let scale = 0.95;
-
-    while(
-      blob.size > MAX_SIZE &&
-      scale >= 0.50
-    ){
-
-      const c =
-        document.createElement("canvas");
-
-      c.width =
-        Math.floor(
-          source.width * scale
-        );
-
-      c.height =
-        Math.floor(
-          source.height * scale
-        );
-
-
-      const cctx =
-        c.getContext("2d");
-
-      cctx.imageSmoothingEnabled =
-        true;
-
-      cctx.imageSmoothingQuality =
-        "high";
-
-
-      cctx.drawImage(
-        source,
-        0,
-        0,
-        c.width,
-        c.height
-      );
-
-
-      const newBlob =
-        await canvasToBlob(c);
-
-
-      exportCanvas =
-        c;
-
-      blob =
-        newBlob;
-
-      scale -= 0.05;
-
-    }
-
-  }
-
-
-  /*
-    如果仍然超過 1MB，
-    最後再做一次比例縮小。
-  */
-
-  if(blob.size > MAX_SIZE){
-
-    const scale =
-      Math.sqrt(
-        MAX_SIZE / blob.size
-      ) * 0.95;
+  while (scale >= 0.40) {
 
     const c =
       document.createElement("canvas");
 
     c.width =
-      Math.floor(
-        source.width * scale
+      Math.max(
+        1,
+        Math.round(W * scale)
       );
 
     c.height =
-      Math.floor(
-        source.height * scale
+      Math.max(
+        1,
+        Math.round(H * scale)
       );
 
-    const cctx =
+    const cx =
       c.getContext("2d");
 
-    cctx.imageSmoothingEnabled =
-      true;
 
-    cctx.imageSmoothingQuality =
-      "high";
-
-    cctx.drawImage(
-      source,
+    cx.drawImage(
+      canvas,
       0,
       0,
       c.width,
       c.height
     );
 
+
     blob =
-      await canvasToBlob(c);
+      await blobFromCanvas(
+        c,
+        "image/png"
+      );
 
-    exportCanvas =
-      c;
 
+    if (
+      blob.size <= TARGET_MAX_BYTES
+    ) {
+
+      return {
+        blob,
+        scale
+      };
+    }
+
+
+    scale -= 0.05;
   }
 
 
-  /*
-    最終安全檢查。
-  */
+  throw new Error(
+    "PNG 即使縮小後仍無法控制在 1 MB 以下。"
+  );
+}
 
-  if(blob.size > MAX_SIZE){
 
-    alert(
-      "目前 PNG 仍超過 1MB，請稍微降低圖片尺寸後再試。"
-    );
+/* =========================================================
+   JPG 控制 1 MB
+   ========================================================= */
 
-    return;
+async function makeJpgUnder1MB() {
+
+  const original =
+    lastCanvas || buildCanvas();
+
+  let scale = 1;
+
+
+  while (scale >= 0.40) {
+
+    let canvas =
+      original;
+
+
+    /*
+      如果需要縮小
+    */
+
+    if (scale !== 1) {
+
+      canvas =
+        document.createElement("canvas");
+
+      canvas.width =
+        Math.max(
+          1,
+          Math.round(W * scale)
+        );
+
+      canvas.height =
+        Math.max(
+          1,
+          Math.round(H * scale)
+        );
+
+      const ctx =
+        canvas.getContext("2d");
+
+
+      /*
+        JPG 不支援透明，
+        所以只有輸出 JPG 時
+        才建立白色背景。
+      */
+
+      ctx.fillStyle = "#fff";
+
+      ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+
+
+      ctx.drawImage(
+        original,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+    }
+
+
+    /*
+      從高品質一路降低。
+    */
+
+    for (
+      let quality = 0.92;
+      quality >= 0.35;
+      quality -= 0.05
+    ) {
+
+      const blob =
+        await blobFromCanvas(
+          canvas,
+          "image/jpeg",
+          quality
+        );
+
+
+      if (
+        blob.size <= TARGET_MAX_BYTES
+      ) {
+
+        return {
+          blob,
+          scale,
+          quality
+        };
+      }
+    }
+
+
+    scale -= 0.05;
   }
 
 
-  /*
-    開始下載。
-  */
+  throw new Error(
+    "JPG 即使壓縮後仍無法控制在 1 MB 以下。"
+  );
+}
+
+
+/* =========================================================
+   檔名
+   ========================================================= */
+
+function safeFilename(ext) {
+
+  const date =
+    (dateEl.value || "receipt")
+      .replaceAll("-", "");
+
+
+  const order =
+    orderNoEl.value
+      .trim()
+      .replace(
+        /[^a-zA-Z0-9_-]/g,
+        ""
+      );
+
+
+  const finalOrder =
+    order || "receipt";
+
+
+  return (
+    `沐光民宿二館_${date}_${finalOrder}.${ext}`
+  );
+}
+
+
+/* =========================================================
+   下載
+   ========================================================= */
+
+function downloadBlob(
+  blob,
+  filename
+) {
 
   const url =
     URL.createObjectURL(blob);
@@ -1095,11 +1211,9 @@ async function downloadPng(){
   const a =
     document.createElement("a");
 
-  a.href =
-    url;
+  a.href = url;
 
-  a.download =
-    "沐光民宿二館_收據.png";
+  a.download = filename;
 
   document.body.appendChild(a);
 
@@ -1110,65 +1224,178 @@ async function downloadPng(){
 
   setTimeout(
     () => URL.revokeObjectURL(url),
-    1000
+    1500
   );
-
-
-  const kb =
-    (blob.size / 1024).toFixed(1);
-
-  alert(
-    `PNG 已產生\n檔案大小：約 ${kb} KB`
-  );
-
 }
 
 
 /* =========================================================
-   恢復測試資料
+   PNG / JPG 下載
    ========================================================= */
 
-function resetForm(){
+async function download(type) {
 
-  $("date").value =
-    "2024-12-12";
+  const pngButton =
+    $("downloadPng");
 
-  $("nights").value =
-    "1";
-
-  $("price").value =
-    "2000";
-
-  $("title").value =
-    "臺灣高等法院";
-
-  $("tax").value =
-    "03796404";
-
-  $("order").value =
-    "0afb 867-2";
-
-  $("address").value =
-    "";
-
-  $("item").value =
-    "沐光 住宿公務保留房費";
+  const jpgButton =
+    $("downloadJpg");
 
 
-  makeReceipt();
+  pngButton.disabled = true;
+  jpgButton.disabled = true;
 
+
+  try {
+
+    statusEl.textContent =
+      "正在產生檔案，並控制在 1 MB 以下……";
+
+
+    lastCanvas =
+      buildCanvas();
+
+
+    let result;
+
+
+    if (
+      type === "png"
+    ) {
+
+      result =
+        await makePngUnder1MB();
+
+    } else {
+
+      result =
+        await makeJpgUnder1MB();
+    }
+
+
+    const sizeMB =
+      (
+        result.blob.size /
+        1024 /
+        1024
+      ).toFixed(2);
+
+
+    downloadBlob(
+      result.blob,
+      safeFilename(type)
+    );
+
+
+    let detail;
+
+
+    if (
+      type === "png"
+    ) {
+
+      detail =
+        `縮放 ${Math.round(result.scale * 100)}%`;
+
+    } else {
+
+      detail =
+        `縮放 ${Math.round(result.scale * 100)}%、品質 ${Math.round(result.quality * 100)}%`;
+    }
+
+
+    statusEl.textContent =
+      `完成：${sizeMB} MB（${detail}）。`;
+    
+
+  } catch (error) {
+
+    statusEl.textContent =
+      "產生失敗：" +
+      error.message;
+
+  } finally {
+
+    pngButton.disabled = false;
+    jpgButton.disabled = false;
+  }
 }
 
 
 /* =========================================================
-   初始產生
+   按鈕
    ========================================================= */
 
-img.onload =
-  makeReceipt;
+$("downloadPng")
+  .addEventListener(
+    "click",
+    () => download("png")
+  );
+
+
+$("downloadJpg")
+  .addEventListener(
+    "click",
+    () => download("jpg")
+  );
+
+
+/* =========================================================
+   表單即時更新
+   ========================================================= */
+
+[
+  dateEl,
+  nightsEl,
+  priceEl,
+  taxIdEl,
+  orderNoEl,
+  titleEl,
+  addressEl,
+  itemEl
+].forEach(
+  element => {
+
+    element.addEventListener(
+      "input",
+      showPreview
+    );
+
+  }
+);
+
+
+dateEl.addEventListener(
+  "change",
+  showPreview
+);
+
+
+/* =========================================================
+   初始化
+   ========================================================= */
+
+setDefaultDate();
+
+
+img.addEventListener(
+  "load",
+  showPreview
+);
+
+
+img.addEventListener(
+  "error",
+  () => {
+
+    statusEl.textContent =
+      "找不到 receipt-template-1.png。請確認它與 index.html 在 GitHub main 同一層。";
+
+  }
+);
 
 </script>
 
 </body>
-
 </html>
+```
