@@ -24,9 +24,9 @@
     color: #222;
 
     font-family:
+      "Noto Sans TC",
       "Helvetica Neue",
       Arial,
-      "Noto Sans TC",
       "Microsoft JhengHei",
       sans-serif;
   }
@@ -41,6 +41,7 @@
     text-align: center;
     color: var(--blue);
     font-size: 28px;
+    font-weight: 600;
   }
 
   .panel {
@@ -64,10 +65,11 @@
   label {
     display: block;
     margin-bottom: 5px;
-    font-weight: 700;
+    font-weight: 600;
   }
 
-  input {
+  input,
+  select {
     width: 100%;
     padding: 10px 11px;
 
@@ -76,11 +78,78 @@
 
     background: #fff;
 
+    font-family:
+      "Noto Sans TC",
+      "Helvetica Neue",
+      Arial,
+      "Microsoft JhengHei",
+      sans-serif;
+
     font-size: 16px;
+    font-weight: 400;
   }
 
   .full {
     grid-column: 1 / -1;
+  }
+
+  .item-area {
+    grid-column: 1 / -1;
+  }
+
+  .item-row {
+    display: grid;
+
+    grid-template-columns:
+      1fr auto;
+
+    gap: 10px;
+
+    margin-bottom: 10px;
+  }
+
+  .item-row select {
+    min-width: 0;
+  }
+
+  .remove-item {
+    padding: 8px 13px;
+
+    border: 1px solid #bbb;
+    border-radius: 7px;
+
+    background: #fff;
+
+    color: #555;
+
+    font-size: 15px;
+    font-weight: 400;
+
+    cursor: pointer;
+  }
+
+  .remove-item:hover {
+    background: #f1f1f1;
+  }
+
+  .add-item {
+    padding: 9px 15px;
+
+    border: 1px dashed #397b9f;
+    border-radius: 7px;
+
+    background: #fff;
+    color: #397b9f;
+
+    font-size: 15px;
+    font-weight: 500;
+
+    cursor: pointer;
+  }
+
+  .add-item:disabled {
+    opacity: .45;
+    cursor: not-allowed;
   }
 
   .buttons {
@@ -97,7 +166,7 @@
     border-radius: 8px;
 
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 600;
 
     cursor: pointer;
   }
@@ -301,19 +370,27 @@
       </div>
 
 
-      <!-- 品名摘要 -->
+      <!-- =================================================
+           品名摘要
+           ================================================= -->
 
-      <div class="full">
+      <div class="item-area">
 
-        <label for="item">
+        <label>
           品名摘要
         </label>
 
-        <input
-          id="item"
-          type="text"
-          value="住宿費"
+
+        <div id="itemRows"></div>
+
+
+        <button
+          id="addItem"
+          class="add-item"
+          type="button"
         >
+          ＋ 新增品項
+        </button>
 
       </div>
 
@@ -384,8 +461,8 @@ const TEMPLATE =
    最新模板尺寸
    ========================================================= */
 
-const W = 2506;
-const H = 1436;
+const W = 2514;
+const H = 1456;
 
 
 /* =========================================================
@@ -400,17 +477,21 @@ const TARGET_MAX_BYTES =
    收據字體
    =========================================================
 
-   第一優先：
-   Helvetica Neue
+   改成比較細的 Regular 字體。
 
-   若系統沒有 Helvetica Neue，
-   自動使用後面的相近字體。
+   Noto Sans TC：
+   400 = 一般細字
 
-   中文會自動由中文字體 fallback。
+   如果裝置沒有，
+   再 fallback 到 Helvetica Neue。
    ========================================================= */
 
 const RECEIPT_FONT_FAMILY =
-  '"Helvetica Neue", Arial, "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+  '"Noto Sans TC", "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif';
+
+
+const RECEIPT_FONT_WEIGHT =
+  400;
 
 
 /* =========================================================
@@ -461,9 +542,11 @@ const titleEl =
 const addressEl =
   $("address");
 
-const itemEl =
-  $("item");
+const itemRowsEl =
+  $("itemRows");
 
+const addItemButton =
+  $("addItem");
 
 const previewImg =
   $("previewImg");
@@ -477,6 +560,32 @@ let lastCanvas =
 
 
 /* =========================================================
+   品名選單
+
+   可以在這裡自行增加選項。
+   ========================================================= */
+
+const ITEM_OPTIONS = [
+  "住宿費",
+  "清潔費",
+  "加床費",
+  "延遲退房費",
+  "其他"
+];
+
+
+/* =========================================================
+   最多 4 筆品項
+
+   第 5 列保留給：
+   《以下空白》
+   ========================================================= */
+
+const MAX_ITEMS =
+  4;
+
+
+/* =========================================================
    載入模板
    ========================================================= */
 
@@ -485,6 +594,180 @@ const img =
 
 img.src =
   TEMPLATE;
+
+
+/* =========================================================
+   建立品項下拉選單
+   ========================================================= */
+
+function createItemRow(
+  selectedValue = "住宿費"
+) {
+
+  if (
+    itemRowsEl.children.length >=
+    MAX_ITEMS
+  ) {
+    return;
+  }
+
+
+  const row =
+    document.createElement(
+      "div"
+    );
+
+  row.className =
+    "item-row";
+
+
+  const select =
+    document.createElement(
+      "select"
+    );
+
+  select.className =
+    "item-select";
+
+
+  ITEM_OPTIONS.forEach(
+    optionText => {
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+      option.value =
+        optionText;
+
+      option.textContent =
+        optionText;
+
+
+      if (
+        optionText ===
+        selectedValue
+      ) {
+
+        option.selected =
+          true;
+      }
+
+
+      select.appendChild(
+        option
+      );
+    }
+  );
+
+
+  const removeButton =
+    document.createElement(
+      "button"
+    );
+
+  removeButton.type =
+    "button";
+
+  removeButton.className =
+    "remove-item";
+
+  removeButton.textContent =
+    "刪除";
+
+
+  removeButton.addEventListener(
+    "click",
+    () => {
+
+      row.remove();
+
+      updateAddButton();
+
+      showPreview();
+
+    }
+  );
+
+
+  select.addEventListener(
+    "change",
+    showPreview
+  );
+
+
+  row.appendChild(
+    select
+  );
+
+  row.appendChild(
+    removeButton
+  );
+
+
+  itemRowsEl.appendChild(
+    row
+  );
+
+
+  updateAddButton();
+}
+
+
+/* =========================================================
+   新增品項
+   ========================================================= */
+
+function updateAddButton() {
+
+  const count =
+    itemRowsEl.children.length;
+
+
+  addItemButton.disabled =
+    count >= MAX_ITEMS;
+
+
+  if (
+    count >= MAX_ITEMS
+  ) {
+
+    addItemButton.textContent =
+      "已達 4 筆品項上限";
+
+  } else {
+
+    addItemButton.textContent =
+      "＋ 新增品項";
+  }
+}
+
+
+/* =========================================================
+   取得所有品項
+   ========================================================= */
+
+function getItems() {
+
+  const selects =
+    [
+      ...document.querySelectorAll(
+        ".item-select"
+      )
+    ];
+
+
+  return selects
+    .map(
+      select =>
+        select.value.trim()
+    )
+    .filter(
+      value =>
+        value !== ""
+    );
+}
 
 
 /* =========================================================
@@ -526,14 +809,17 @@ function formatROCDate(
     return "";
   }
 
+
   const parts =
     dateString.split("-");
+
 
   if (
     parts.length !== 3
   ) {
     return dateString;
   }
+
 
   const year =
     Number(parts[0]);
@@ -544,6 +830,7 @@ function formatROCDate(
   const day =
     Number(parts[2]);
 
+
   if (
     !year ||
     !month ||
@@ -552,8 +839,10 @@ function formatROCDate(
     return dateString;
   }
 
+
   const rocYear =
     year - 1911;
+
 
   return (
     `中華民國${rocYear}年${month}月${day}日`
@@ -573,14 +862,17 @@ function parseLocalDate(
     return null;
   }
 
+
   const parts =
     dateString.split("-");
+
 
   if (
     parts.length !== 3
   ) {
     return null;
   }
+
 
   const year =
     Number(parts[0]);
@@ -591,6 +883,7 @@ function parseLocalDate(
   const day =
     Number(parts[2]);
 
+
   if (
     !year ||
     !month ||
@@ -598,6 +891,7 @@ function parseLocalDate(
   ) {
     return null;
   }
+
 
   return new Date(
     year,
@@ -619,6 +913,7 @@ function formatMonthDay(
     return "";
   }
 
+
   return (
     `${date.getMonth() + 1}/${date.getDate()}`
   );
@@ -627,6 +922,10 @@ function formatMonthDay(
 
 /* =========================================================
    住宿日期區間
+   =========================================================
+
+   住 3 晚：
+   9/5~9/7
    ========================================================= */
 
 function getStayDateRange(
@@ -639,30 +938,37 @@ function getStayDateRange(
       dateString
     );
 
+
   const count =
     Math.max(
       0,
       Number(nights) || 0
     );
 
+
   if (!start) {
     return "";
   }
 
+
   if (count <= 0) {
+
     return formatMonthDay(
       start
     );
   }
 
+
   const end =
     new Date(start);
+
 
   end.setDate(
     end.getDate() +
     count -
     1
   );
+
 
   return (
     `${formatMonthDay(start)}~${formatMonthDay(end)}`
@@ -680,6 +986,7 @@ function money(
 
   const n =
     Number(value) || 0;
+
 
   return (
     "$" +
@@ -703,7 +1010,7 @@ function setReceiptFont(
 ) {
 
   ctx.font =
-    `600 ${size}px ${RECEIPT_FONT_FAMILY}`;
+    `${RECEIPT_FONT_WEIGHT} ${size}px ${RECEIPT_FONT_FAMILY}`;
 }
 
 
@@ -722,6 +1029,7 @@ function fitText(
   let size =
     initialSize;
 
+
   while (
     size > minSize
   ) {
@@ -731,15 +1039,19 @@ function fitText(
       size
     );
 
+
     if (
       ctx.measureText(text).width <=
       maxWidth
     ) {
+
       break;
     }
 
+
     size--;
   }
+
 
   return size;
 }
@@ -766,16 +1078,19 @@ function drawCentered(
       size
     );
 
+
   setReceiptFont(
     ctx,
     actualSize
   );
+
 
   ctx.textAlign =
     "center";
 
   ctx.textBaseline =
     "middle";
+
 
   ctx.fillText(
     text,
@@ -802,11 +1117,13 @@ function drawRight(
     size
   );
 
+
   ctx.textAlign =
     "right";
 
   ctx.textBaseline =
     "middle";
+
 
   ctx.fillText(
     text,
@@ -833,10 +1150,12 @@ function drawDateStretched(
     return;
   }
 
+
   setReceiptFont(
     ctx,
     fontSize
   );
+
 
   ctx.textAlign =
     "left";
@@ -885,7 +1204,7 @@ function drawDateStretched(
 
 
   /*
-    如果文字本身太寬，
+    如果文字太寬，
     自動縮小。
   */
 
@@ -900,6 +1219,7 @@ function drawDateStretched(
         30
       );
 
+
     drawCentered(
       ctx,
       text,
@@ -911,6 +1231,7 @@ function drawDateStretched(
       reducedSize,
       targetWidth
     );
+
 
     return;
   }
@@ -929,6 +1250,7 @@ function drawDateStretched(
       x,
       y
     );
+
 
     x +=
       ctx.measureText(
@@ -957,13 +1279,14 @@ function buildCanvas() {
 
 
   /* -------------------------------------------------------
-     第一層：原始模板
+     原始模板
      ------------------------------------------------------- */
 
   const canvas =
     document.createElement(
       "canvas"
     );
+
 
   canvas.width =
     W;
@@ -982,7 +1305,7 @@ function buildCanvas() {
 
 
   /*
-    直接完整保留最新模板。
+    完整保留模板。
   */
 
   ctx.drawImage(
@@ -995,13 +1318,14 @@ function buildCanvas() {
 
 
   /* -------------------------------------------------------
-     第二層：透明文字層
+     透明文字層
      ------------------------------------------------------- */
 
   const overlay =
     document.createElement(
       "canvas"
     );
+
 
   overlay.width =
     W;
@@ -1053,17 +1377,6 @@ function buildCanvas() {
 
   /* =======================================================
      抬頭 / 地址
-     =======================================================
-
-     這次把兩行距離增加 20 px：
-
-     原本：
-     235 → 285
-     = 50 px
-
-     現在：
-     235 → 305
-     = 70 px
      ======================================================= */
 
   const infoX =
@@ -1073,6 +1386,11 @@ function buildCanvas() {
   const titleY =
     235;
 
+
+  /*
+    抬頭與地址維持上一版
+    約 70px 高度間距。
+  */
 
   const addressY =
     305;
@@ -1169,22 +1487,32 @@ function buildCanvas() {
 
   /* =======================================================
      統一編號 / 單號
+     =======================================================
+
+     增加上下間距約 20px：
+
+     統一編號：235
+     單   號：305
      ======================================================= */
 
   const labelX =
     1550;
 
+
   const colonX =
     1685;
+
 
   const valueX =
     1720;
 
+
   const taxY =
     235;
 
+
   const orderY =
-    285;
+    305;
 
 
   setReceiptFont(
@@ -1273,9 +1601,8 @@ function buildCanvas() {
      品名摘要
      ======================================================= */
 
-  const item =
-    itemEl.value.trim() ||
-    "住宿費";
+  const items =
+    getItems();
 
 
   const stayRange =
@@ -1285,92 +1612,153 @@ function buildCanvas() {
     );
 
 
-  let itemText =
-    item;
+  /*
+    模板共有 5 個品項列。
 
+    最後一列保留給：
+    《以下空白》
+  */
 
-  if (stayRange) {
-
-    itemText =
-      `${item} <${stayRange}>`;
-  }
-
-
-  /* =======================================================
-     表格座標
-     ======================================================= */
 
   const itemCenterX =
     505;
 
+
   const nightsCenterX =
     1108;
 
+
   const priceCenterX =
     1386;
+
 
   const totalRightX =
     1805;
 
 
-  const firstRowY =
-    564;
+  /*
+    5 個品項列中心位置。
+  */
+
+  const itemRowYs = [
+    564,
+    677,
+    790,
+    903,
+    1016
+  ];
 
 
   /* =======================================================
-     品名
+     每一筆品項
      ======================================================= */
+
+  items.forEach(
+    (item, index) => {
+
+      if (
+        index >= MAX_ITEMS
+      ) {
+        return;
+      }
+
+
+      let itemText =
+        item;
+
+
+      /*
+        只有住宿費自動加住宿日期。
+      */
+
+      if (
+        item === "住宿費" &&
+        stayRange
+      ) {
+
+        itemText =
+          `${item} <${stayRange}>`;
+      }
+
+
+      drawCentered(
+        octx,
+        itemText,
+        itemCenterX,
+        itemRowYs[index],
+        RECEIPT_FONT_SIZE,
+        820
+      );
+
+
+      /*
+        目前住宿費的天數／單價／總價
+        放在第一筆資料列。
+
+        其他品項維持品名摘要，
+        不重複計算金額。
+      */
+
+      if (
+        index === 0
+      ) {
+
+        drawCentered(
+          octx,
+          String(nights),
+          nightsCenterX,
+          itemRowYs[index],
+          RECEIPT_FONT_SIZE,
+          180
+        );
+
+
+        drawCentered(
+          octx,
+          Number(unitPrice).toLocaleString(
+            "en-US"
+          ),
+          priceCenterX,
+          itemRowYs[index],
+          RECEIPT_FONT_SIZE,
+          220
+        );
+
+
+        drawRight(
+          octx,
+          money(subtotal),
+          totalRightX,
+          itemRowYs[index],
+          RECEIPT_FONT_SIZE
+        );
+      }
+
+    }
+  );
+
+
+  /* =======================================================
+     《以下空白》
+     =======================================================
+
+     永遠放在最後一筆品項的下一列。
+     ======================================================= */
+
+  const blankRowIndex =
+    Math.min(
+      items.length,
+      MAX_ITEMS
+    );
+
 
   drawCentered(
     octx,
-    itemText,
+    "《以下空白》",
     itemCenterX,
-    firstRowY,
+    itemRowYs[blankRowIndex],
     RECEIPT_FONT_SIZE,
     820
-  );
-
-
-  /* =======================================================
-     天數
-     ======================================================= */
-
-  drawCentered(
-    octx,
-    String(nights),
-    nightsCenterX,
-    firstRowY,
-    RECEIPT_FONT_SIZE,
-    180
-  );
-
-
-  /* =======================================================
-     單價
-     ======================================================= */
-
-  drawCentered(
-    octx,
-    Number(unitPrice).toLocaleString(
-      "en-US"
-    ),
-    priceCenterX,
-    firstRowY,
-    RECEIPT_FONT_SIZE,
-    220
-  );
-
-
-  /* =======================================================
-     總價
-     ======================================================= */
-
-  drawRight(
-    octx,
-    money(subtotal),
-    totalRightX,
-    firstRowY,
-    RECEIPT_FONT_SIZE
   );
 
 
@@ -1943,8 +2331,22 @@ $("downloadJpg")
   );
 
 
+addItemButton
+  .addEventListener(
+    "click",
+    () => {
+
+      createItemRow(
+        "住宿費"
+      );
+
+      showPreview();
+    }
+  );
+
+
 /* =========================================================
-   輸入即時更新
+   即時更新
    ========================================================= */
 
 [
@@ -1954,8 +2356,7 @@ $("downloadJpg")
   taxIdEl,
   orderNoEl,
   titleEl,
-  addressEl,
-  itemEl
+  addressEl
 ].forEach(
   element => {
 
@@ -1979,6 +2380,15 @@ dateEl.addEventListener(
    ========================================================= */
 
 setDefaultDate();
+
+
+/*
+  預設先建立第一筆品項。
+*/
+
+createItemRow(
+  "住宿費"
+);
 
 
 img.addEventListener(
