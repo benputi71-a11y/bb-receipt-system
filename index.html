@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#174a8b">
+  <title>民宿電子收據系統</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC",sans-serif;background:#f4f7fb;color:#172033}
+    .top{background:#174a8b;color:#fff;padding:24px 20px 28px}
+    .top h1{margin:0 0 8px;font-size:26px}.top p{margin:0;opacity:.9}
+    .wrap{max-width:900px;margin:auto;padding:20px}
+    .card{background:#fff;border-radius:18px;padding:22px;margin-bottom:16px;box-shadow:0 4px 18px #00000012}
+    .card h2{margin:0 0 16px;font-size:20px}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    button{width:100%;border:0;border-radius:14px;padding:18px;font-size:17px;font-weight:700;cursor:pointer}
+    .primary{background:#174a8b;color:#fff}.secondary{background:#eef3f9;color:#174a8b}
+    .info{background:#f7f9fc;border-left:4px solid #174a8b;padding:14px;border-radius:8px;line-height:1.7}
+    .status{font-size:14px;color:#667085;margin-top:12px}
+    @media(max-width:600px){.grid{grid-template-columns:1fr}.top h1{font-size:23px}}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <h1>🏠 民宿電子收據系統</h1>
+      <p>Local First｜資料優先保存於本機</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <h2>目前系統狀態</h2>
+      <div class="info">
+        <strong>第一版測試系統</strong><br>
+        目前先建立操作介面。下一階段會加入「沐光民宿二館」收據模板、
+        自動填寫、電子簽名、JPG 壓縮與本機紀錄。
+      </div>
+      <div class="status">✓ 系統頁面已建立　｜　資料尚未儲存或上傳</div>
+    </section>
+
+    <section class="card">
+      <h2>功能入口</h2>
+      <div class="grid">
+        <button class="primary" onclick="alert('下一階段加入：開立新收據')">＋ 開立新收據</button>
+        <button class="secondary" onclick="alert('下一階段加入：待簽名')">📋 待簽名</button>
+        <button class="secondary" onclick="alert('下一階段加入：收據紀錄')">📁 收據紀錄</button>
+        <button class="secondary" onclick="alert('下一階段加入：五間民宿設定')">🏠 民宿設定</button>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
