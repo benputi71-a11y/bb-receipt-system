@@ -275,6 +275,14 @@ const TARGET_MAX_BYTES = 1024 * 1024;
 
 
 /* =========================================================
+   收據文字統一字體大小
+   與模板「小計」使用同一基準
+   ========================================================= */
+
+const RECEIPT_FONT_SIZE = 30;
+
+
+/* =========================================================
    取得表單元素
    ========================================================= */
 
@@ -305,7 +313,7 @@ img.src = TEMPLATE;
 
 
 /* =========================================================
-   日期
+   設定今天日期
    ========================================================= */
 
 function setDefaultDate() {
@@ -328,18 +336,191 @@ function setDefaultDate() {
 
 
 /* =========================================================
+   西元日期 → 民國正式日期
+   =========================================================
+
+   例如：
+
+   2026-09-05
+
+   →
+
+   民國115年9月5日
+   ========================================================= */
+
+function formatROCDate(dateString) {
+
+  if (!dateString) {
+    return "";
+  }
+
+  const parts =
+    dateString.split("-");
+
+  if (parts.length !== 3) {
+    return dateString;
+  }
+
+  const year =
+    Number(parts[0]);
+
+  const month =
+    Number(parts[1]);
+
+  const day =
+    Number(parts[2]);
+
+  if (
+    !year ||
+    !month ||
+    !day
+  ) {
+    return dateString;
+  }
+
+  const rocYear =
+    year - 1911;
+
+  return (
+    `民國${rocYear}年${month}月${day}日`
+  );
+}
+
+
+/* =========================================================
+   日期字串 → Date
+   使用本地時間，避免時區造成日期偏移
+   ========================================================= */
+
+function parseLocalDate(dateString) {
+
+  if (!dateString) {
+    return null;
+  }
+
+  const parts =
+    dateString.split("-");
+
+  if (parts.length !== 3) {
+    return null;
+  }
+
+  const year =
+    Number(parts[0]);
+
+  const month =
+    Number(parts[1]);
+
+  const day =
+    Number(parts[2]);
+
+  if (
+    !year ||
+    !month ||
+    !day
+  ) {
+    return null;
+  }
+
+  return new Date(
+    year,
+    month - 1,
+    day
+  );
+}
+
+
+/* =========================================================
+   日期 → M/D
+   ========================================================= */
+
+function formatMonthDay(date) {
+
+  if (!date) {
+    return "";
+  }
+
+  return (
+    `${date.getMonth() + 1}/${date.getDate()}`
+  );
+}
+
+
+/* =========================================================
+   住宿日期區間
+   =========================================================
+
+   依照你指定的例子：
+
+   入住 9/5
+   住 3 晚
+
+   顯示：
+
+   9/5~9/7
+
+   也就是「實際住宿的第一天～最後一天」。
+
+   因此：
+   結束日期 = 入住日期 + 天數 - 1
+   ========================================================= */
+
+function getStayDateRange(
+  dateString,
+  nights
+) {
+
+  const start =
+    parseLocalDate(dateString);
+
+  const count =
+    Math.max(
+      0,
+      Number(nights) || 0
+    );
+
+
+  if (!start) {
+    return "";
+  }
+
+
+  if (count <= 0) {
+    return formatMonthDay(start);
+  }
+
+
+  const end =
+    new Date(start);
+
+  end.setDate(
+    end.getDate() + count - 1
+  );
+
+
+  return (
+    `${formatMonthDay(start)}~${formatMonthDay(end)}`
+  );
+}
+
+
+/* =========================================================
    金額格式
    ========================================================= */
 
 function money(value) {
 
-  const n = Number(value) || 0;
+  const n =
+    Number(value) || 0;
 
-  return "$" + n.toLocaleString(
-    "en-US",
-    {
-      maximumFractionDigits: 0
-    }
+  return (
+    "$" +
+    n.toLocaleString(
+      "en-US",
+      {
+        maximumFractionDigits: 0
+      }
+    )
   );
 }
 
@@ -356,12 +537,17 @@ function fitText(
   minSize = 14
 ) {
 
-  let size = initialSize;
+  let size =
+    initialSize;
 
-  while (size > minSize) {
+
+  while (
+    size > minSize
+  ) {
 
     ctx.font =
       `600 ${size}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
+
 
     if (
       ctx.measureText(text).width <= maxWidth
@@ -369,8 +555,10 @@ function fitText(
       break;
     }
 
+
     size--;
   }
+
 
   return size;
 }
@@ -397,11 +585,16 @@ function drawCentered(
       size
     );
 
+
   ctx.font =
     `600 ${actualSize}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
 
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
+  ctx.textAlign =
+    "center";
+
+  ctx.textBaseline =
+    "middle";
+
 
   ctx.fillText(
     text,
@@ -426,8 +619,12 @@ function drawRight(
   ctx.font =
     `600 ${size}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
 
-  ctx.textAlign = "right";
-  ctx.textBaseline = "middle";
+  ctx.textAlign =
+    "right";
+
+  ctx.textBaseline =
+    "middle";
+
 
   ctx.fillText(
     text,
@@ -454,27 +651,33 @@ function buildCanvas() {
   }
 
 
-  /*
-    ---------------------------------------------------------
-    第一層：模板原圖
-    ---------------------------------------------------------
-  */
+  /* -------------------------------------------------------
+     第一層：原始模板
+     ------------------------------------------------------- */
 
   const canvas =
-    document.createElement("canvas");
+    document.createElement(
+      "canvas"
+    );
 
-  canvas.width = W;
-  canvas.height = H;
+  canvas.width =
+    W;
+
+  canvas.height =
+    H;
+
 
   const ctx =
     canvas.getContext(
       "2d",
-      { alpha: true }
+      {
+        alpha: true
+      }
     );
 
 
   /*
-    完整保留新的空白模板
+    完整保留最新空白模板
   */
 
   ctx.drawImage(
@@ -486,23 +689,30 @@ function buildCanvas() {
   );
 
 
-  /*
-    ---------------------------------------------------------
-    第二層：透明 Overlay
-    ---------------------------------------------------------
-  */
+  /* -------------------------------------------------------
+     第二層：透明 Overlay
+     ------------------------------------------------------- */
 
   const overlay =
-    document.createElement("canvas");
+    document.createElement(
+      "canvas"
+    );
 
-  overlay.width = W;
-  overlay.height = H;
+  overlay.width =
+    W;
+
+  overlay.height =
+    H;
+
 
   const octx =
     overlay.getContext(
       "2d",
-      { alpha: true }
+      {
+        alpha: true
+      }
     );
+
 
   octx.clearRect(
     0,
@@ -511,68 +721,92 @@ function buildCanvas() {
     H
   );
 
-  octx.fillStyle = "#111";
+
+  octx.fillStyle =
+    "#111";
 
 
   /* =======================================================
-     上方資訊區
+     日期
      ======================================================= */
 
+  const rocDate =
+    formatROCDate(
+      dateEl.value
+    );
+
+
   /*
-    日期
-    新模板表格上緣約為 Y=392。
-    日期放在上方空白區中央。
+    日期改為：
+
+    民國115年9月5日
   */
 
   drawCentered(
     octx,
-    dateEl.value || "",
+    rocDate,
     1253,
     150,
-    30,
-    500
+    RECEIPT_FONT_SIZE,
+    700
   );
 
 
-  /*
-    ---------------------------------------------------------
-    抬頭 / 地址
-    ---------------------------------------------------------
+  /* =======================================================
+     抬頭 / 地址
+     ======================================================= */
 
-    兩者使用完全相同的 X 起點。
+  /*
+    兩者 X 完全相同。
   */
 
-  const infoX = 80;
+  const infoX =
+    80;
 
-  const titleY = 230;
-  const addressY = 275;
+  const titleY =
+    230;
+
+  const addressY =
+    275;
 
 
   const title =
     titleEl.value.trim();
 
+
+  /*
+    抬頭留空時，
+    完全不顯示「抬頭：」
+  */
+
   if (title) {
 
-    const text =
+    const titleText =
       "抬頭：" + title;
 
-    const size =
+
+    const titleSize =
       fitText(
         octx,
-        text,
+        titleText,
         1080,
-        29,
+        RECEIPT_FONT_SIZE,
         16
       );
 
-    octx.font =
-      `600 ${size}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
 
-    octx.textAlign = "left";
-    octx.textBaseline = "middle";
+    octx.font =
+      `600 ${titleSize}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
+
+    octx.textAlign =
+      "left";
+
+    octx.textBaseline =
+      "middle";
+
 
     octx.fillText(
-      text,
+      titleText,
       infoX,
       titleY
     );
@@ -586,23 +820,30 @@ function buildCanvas() {
   const address =
     addressEl.value.trim();
 
+
   const addressText =
     "地址：" + address;
+
 
   const addressSize =
     fitText(
       octx,
       addressText,
       1080,
-      29,
+      RECEIPT_FONT_SIZE,
       16
     );
+
 
   octx.font =
     `600 ${addressSize}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
 
-  octx.textAlign = "left";
-  octx.textBaseline = "middle";
+  octx.textAlign =
+    "left";
+
+  octx.textBaseline =
+    "middle";
+
 
   octx.fillText(
     addressText,
@@ -615,35 +856,35 @@ function buildCanvas() {
      統一編號 / 單號
      ======================================================= */
 
-  /*
-    兩行的：
-    
-    標籤
-    冒號
-    數值
+  const labelX =
+    1550;
 
-    全部固定 X。
+  const colonX =
+    1685;
 
-    產生：
+  const valueX =
+    1720;
 
-    統一編號： 03796404
-    單   號： 0afb867-2
-  */
+  const taxY =
+    230;
 
-  const labelX = 1550;
-  const colonX = 1685;
-  const valueX = 1720;
-
-  const taxY = 230;
-  const orderY = 275;
+  const orderY =
+    275;
 
 
   octx.font =
-    `600 28px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
+    `600 ${RECEIPT_FONT_SIZE}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
 
-  octx.textAlign = "left";
-  octx.textBaseline = "middle";
+  octx.textAlign =
+    "left";
 
+  octx.textBaseline =
+    "middle";
+
+
+  /*
+    統一編號
+  */
 
   octx.fillText(
     "統一編號",
@@ -663,6 +904,10 @@ function buildCanvas() {
     taxY
   );
 
+
+  /*
+    單號
+  */
 
   octx.fillText(
     "單   號",
@@ -684,7 +929,7 @@ function buildCanvas() {
 
 
   /* =======================================================
-     金額計算
+     金額
      ======================================================= */
 
   const nights =
@@ -693,130 +938,130 @@ function buildCanvas() {
       Number(nightsEl.value) || 0
     );
 
+
   const unitPrice =
     Math.max(
       0,
       Number(priceEl.value) || 0
     );
 
+
   const subtotal =
     nights * unitPrice;
+
+
+  /* =======================================================
+     品名摘要
+     ======================================================= */
+
+  const item =
+    itemEl.value.trim() ||
+    "住宿費";
+
+
+  /*
+    例如：
+
+    住宿費 <9/5~9/7>
+  */
+
+  const stayRange =
+    getStayDateRange(
+      dateEl.value,
+      nights
+    );
+
+
+  let itemText =
+    item;
+
+
+  if (stayRange) {
+
+    itemText =
+      `${item} <${stayRange}>`;
+  }
 
 
   /* =======================================================
      表格座標
      ======================================================= */
 
-  /*
-    新模板實際主要欄線：
+  const itemCenterX =
+    505;
 
-    品名摘要：
-    X 約 49 ～ 962
+  const nightsCenterX =
+    1108;
 
-    天數：
-    X 約 962 ～ 1254
+  const priceCenterX =
+    1386;
 
-    單價：
-    X 約 1254 ～ 1519
-
-    總價：
-    X 約 1519 ～ 1829
-
-    備註：
-    X 約 1829 ～ 2465
-  */
-
-
-  const itemCenterX = 505;
-  const nightsCenterX = 1108;
-  const priceCenterX = 1386;
-  const totalRightX = 1805;
+  const totalRightX =
+    1805;
 
 
   /*
-    第一筆明細列中心
-
-    表頭底線約 Y=507
-    第一列底線約 Y=620
-
-    所以中心約 Y=564
+    第一列中心
   */
 
-  const firstRowY = 564;
+  const firstRowY =
+    564;
 
 
-  /*
-    品名
-  */
-
-  const item =
-    itemEl.value.trim() || "住宿費";
+  /* =======================================================
+     品名
+     ======================================================= */
 
   drawCentered(
     octx,
-    item,
+    itemText,
     itemCenterX,
     firstRowY,
-    30,
+    RECEIPT_FONT_SIZE,
     820
   );
 
 
-  /*
-    品名下面附日期
-  */
-
-  drawCentered(
-    octx,
-    dateEl.value || "",
-    itemCenterX,
-    firstRowY + 34,
-    20,
-    820
-  );
-
-
-  /*
-    天數
-  */
+  /* =======================================================
+     天數
+     ======================================================= */
 
   drawCentered(
     octx,
     String(nights),
     nightsCenterX,
     firstRowY,
-    30,
+    RECEIPT_FONT_SIZE,
     180
   );
 
 
-  /*
-    單價
-
-    不顯示 $，
-    因為模板欄位名稱已經是「單價」。
-  */
+  /* =======================================================
+     單價
+     ======================================================= */
 
   drawCentered(
     octx,
-    Number(unitPrice).toLocaleString("en-US"),
+    Number(unitPrice).toLocaleString(
+      "en-US"
+    ),
     priceCenterX,
     firstRowY,
-    30,
+    RECEIPT_FONT_SIZE,
     220
   );
 
 
-  /*
-    總價
-  */
+  /* =======================================================
+     總價
+     ======================================================= */
 
   drawRight(
     octx,
     money(subtotal),
     totalRightX,
     firstRowY,
-    30
+    RECEIPT_FONT_SIZE
   );
 
 
@@ -824,21 +1069,12 @@ function buildCanvas() {
      小計
      ======================================================= */
 
-  /*
-    新模板：
-
-    第一條粗線約 Y=1053
-    小計 / 折扣 / 總計區域
-
-    小計中心約 Y=1110
-  */
-
   drawRight(
     octx,
     money(subtotal),
     totalRightX,
     1110,
-    30
+    RECEIPT_FONT_SIZE
   );
 
 
@@ -846,17 +1082,12 @@ function buildCanvas() {
      折扣
      ======================================================= */
 
-  /*
-    目前系統沒有折扣輸入欄，
-    因此折扣固定為 $0。
-  */
-
   drawRight(
     octx,
     "$0",
     totalRightX,
     1225,
-    30
+    RECEIPT_FONT_SIZE
   );
 
 
@@ -869,12 +1100,12 @@ function buildCanvas() {
     money(subtotal),
     totalRightX,
     1338,
-    30
+    RECEIPT_FONT_SIZE
   );
 
 
   /* =======================================================
-     將透明 Overlay 合成到模板
+     合併透明 Overlay
      ======================================================= */
 
   ctx.drawImage(
@@ -899,15 +1130,20 @@ function showPreview() {
     const canvas =
       buildCanvas();
 
-    lastCanvas = canvas;
+
+    lastCanvas =
+      canvas;
+
 
     previewImg.src =
       canvas.toDataURL(
         "image/png"
       );
 
+
     statusEl.textContent =
       "預覽已更新。";
+
 
   } catch (error) {
 
@@ -963,7 +1199,9 @@ function blobFromCanvas(
 async function makePngUnder1MB() {
 
   let canvas =
-    lastCanvas || buildCanvas();
+    lastCanvas ||
+    buildCanvas();
+
 
   let blob =
     await blobFromCanvas(
@@ -972,13 +1210,9 @@ async function makePngUnder1MB() {
     );
 
 
-  /*
-    如果原始 PNG 已經 <= 1 MB
-    直接使用原尺寸。
-  */
-
   if (
-    blob.size <= TARGET_MAX_BYTES
+    blob.size <=
+    TARGET_MAX_BYTES
   ) {
 
     return {
@@ -989,19 +1223,24 @@ async function makePngUnder1MB() {
 
 
   /*
-    PNG 沒有 quality 參數。
+    PNG 沒有 quality。
 
-    所以超過 1 MB 時，
-    自動縮小圖片。
+    超過 1 MB 時自動縮小。
   */
 
-  let scale = 0.95;
+  let scale =
+    0.95;
 
 
-  while (scale >= 0.40) {
+  while (
+    scale >= 0.40
+  ) {
 
     const c =
-      document.createElement("canvas");
+      document.createElement(
+        "canvas"
+      );
+
 
     c.width =
       Math.max(
@@ -1009,11 +1248,13 @@ async function makePngUnder1MB() {
         Math.round(W * scale)
       );
 
+
     c.height =
       Math.max(
         1,
         Math.round(H * scale)
       );
+
 
     const cx =
       c.getContext("2d");
@@ -1036,7 +1277,8 @@ async function makePngUnder1MB() {
 
 
     if (
-      blob.size <= TARGET_MAX_BYTES
+      blob.size <=
+      TARGET_MAX_BYTES
     ) {
 
       return {
@@ -1063,25 +1305,31 @@ async function makePngUnder1MB() {
 async function makeJpgUnder1MB() {
 
   const original =
-    lastCanvas || buildCanvas();
+    lastCanvas ||
+    buildCanvas();
 
-  let scale = 1;
+
+  let scale =
+    1;
 
 
-  while (scale >= 0.40) {
+  while (
+    scale >= 0.40
+  ) {
 
     let canvas =
       original;
 
 
-    /*
-      如果需要縮小
-    */
-
-    if (scale !== 1) {
+    if (
+      scale !== 1
+    ) {
 
       canvas =
-        document.createElement("canvas");
+        document.createElement(
+          "canvas"
+        );
+
 
       canvas.width =
         Math.max(
@@ -1089,23 +1337,28 @@ async function makeJpgUnder1MB() {
           Math.round(W * scale)
         );
 
+
       canvas.height =
         Math.max(
           1,
           Math.round(H * scale)
         );
 
+
       const ctx =
-        canvas.getContext("2d");
+        canvas.getContext(
+          "2d"
+        );
 
 
       /*
-        JPG 不支援透明，
-        所以只有輸出 JPG 時
-        才建立白色背景。
+        JPG 沒有透明背景。
+        只有輸出 JPG 時才使用白色背景。
       */
 
-      ctx.fillStyle = "#fff";
+      ctx.fillStyle =
+        "#fff";
+
 
       ctx.fillRect(
         0,
@@ -1125,10 +1378,6 @@ async function makeJpgUnder1MB() {
     }
 
 
-    /*
-      從高品質一路降低。
-    */
-
     for (
       let quality = 0.92;
       quality >= 0.35;
@@ -1144,7 +1393,8 @@ async function makeJpgUnder1MB() {
 
 
       if (
-        blob.size <= TARGET_MAX_BYTES
+        blob.size <=
+        TARGET_MAX_BYTES
       ) {
 
         return {
@@ -1170,11 +1420,18 @@ async function makeJpgUnder1MB() {
    檔名
    ========================================================= */
 
-function safeFilename(ext) {
+function safeFilename(
+  ext
+) {
 
   const date =
-    (dateEl.value || "receipt")
-      .replaceAll("-", "");
+    (
+      dateEl.value ||
+      "receipt"
+    ).replaceAll(
+      "-",
+      ""
+    );
 
 
   const order =
@@ -1187,7 +1444,8 @@ function safeFilename(ext) {
 
 
   const finalOrder =
-    order || "receipt";
+    order ||
+    "receipt";
 
 
   return (
@@ -1197,7 +1455,7 @@ function safeFilename(ext) {
 
 
 /* =========================================================
-   下載
+   下載檔案
    ========================================================= */
 
 function downloadBlob(
@@ -1206,24 +1464,42 @@ function downloadBlob(
 ) {
 
   const url =
-    URL.createObjectURL(blob);
+    URL.createObjectURL(
+      blob
+    );
+
 
   const a =
-    document.createElement("a");
+    document.createElement(
+      "a"
+    );
 
-  a.href = url;
 
-  a.download = filename;
+  a.href =
+    url;
 
-  document.body.appendChild(a);
+
+  a.download =
+    filename;
+
+
+  document.body.appendChild(
+    a
+  );
+
 
   a.click();
+
 
   a.remove();
 
 
   setTimeout(
-    () => URL.revokeObjectURL(url),
+    () => {
+      URL.revokeObjectURL(
+        url
+      );
+    },
     1500
   );
 }
@@ -1233,7 +1509,9 @@ function downloadBlob(
    PNG / JPG 下載
    ========================================================= */
 
-async function download(type) {
+async function download(
+  type
+) {
 
   const pngButton =
     $("downloadPng");
@@ -1242,8 +1520,11 @@ async function download(type) {
     $("downloadJpg");
 
 
-  pngButton.disabled = true;
-  jpgButton.disabled = true;
+  pngButton.disabled =
+    true;
+
+  jpgButton.disabled =
+    true;
 
 
   try {
@@ -1295,18 +1576,24 @@ async function download(type) {
     ) {
 
       detail =
-        `縮放 ${Math.round(result.scale * 100)}%`;
+        `縮放 ${Math.round(
+          result.scale * 100
+        )}%`;
 
     } else {
 
       detail =
-        `縮放 ${Math.round(result.scale * 100)}%、品質 ${Math.round(result.quality * 100)}%`;
+        `縮放 ${Math.round(
+          result.scale * 100
+        )}%、品質 ${Math.round(
+          result.quality * 100
+        )}%`;
     }
 
 
     statusEl.textContent =
       `完成：${sizeMB} MB（${detail}）。`;
-    
+
 
   } catch (error) {
 
@@ -1314,16 +1601,20 @@ async function download(type) {
       "產生失敗：" +
       error.message;
 
+
   } finally {
 
-    pngButton.disabled = false;
-    jpgButton.disabled = false;
+    pngButton.disabled =
+      false;
+
+    jpgButton.disabled =
+      false;
   }
 }
 
 
 /* =========================================================
-   按鈕
+   下載按鈕
    ========================================================= */
 
 $("downloadPng")
@@ -1341,7 +1632,7 @@ $("downloadJpg")
 
 
 /* =========================================================
-   表單即時更新
+   輸入即時更新
    ========================================================= */
 
 [
