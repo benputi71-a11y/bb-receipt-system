@@ -11,7 +11,9 @@
 
 <style>
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box
+}
 
 body{
   margin:0;
@@ -157,119 +159,155 @@ canvas{
 <body>
 
 <header>
-  <div class="wrap">
-    <h1>🏠 民宿電子收據系統</h1>
-    <p>第一個可填寫版本｜沐光民宿二館</p>
-  </div>
+
+<div class="wrap">
+
+<h1>🏠 民宿電子收據系統</h1>
+
+<p>第一個可填寫版本｜沐光民宿二館</p>
+
+</div>
+
 </header>
 
 
 <main class="wrap">
 
+
 <section class="card">
 
 <h2>① 輸入收據資料</h2>
 
+
 <div class="form">
 
-<label>
-  入住日期
-  <input id="date" type="date" value="2024-12-12">
-</label>
 
 <label>
-  住宿天數
-  <input id="nights" type="number" min="1" value="1">
+入住日期
+<input id="date" type="date" value="2024-12-12">
 </label>
 
-<label>
-  單價
-  <input id="price" type="number" min="0" value="2000">
-</label>
 
 <label>
-  抬頭
-  <input id="title" value="臺灣高等法院">
+住宿天數
+<input id="nights" type="number" min="1" value="1">
 </label>
 
-<label>
-  統一編號
-  <input id="tax" value="03796404">
-</label>
 
 <label>
-  訂單編號
-  <input id="order" value="0afb 867-2">
+單價
+<input id="price" type="number" min="0" value="2000">
 </label>
 
+
 <label>
-  地址
-  <input id="address" value="">
+抬頭
+<input id="title" value="臺灣高等法院">
 </label>
+
+
+<label>
+統一編號
+<input id="tax" value="03796404">
+</label>
+
+
+<label>
+訂單編號
+<input id="order" value="0afb 867-2">
+</label>
+
+
+<label>
+地址
+<input id="address" value="">
+</label>
+
 
 <label class="full">
-  品名摘要
-  <input id="item" value="沐光 住宿公務保留房費">
+品名摘要
+<input id="item" value="沐光 住宿公務保留房費">
 </label>
 
+
 </div>
+
 
 <div class="actions">
 
 <button class="primary" onclick="makeReceipt()">
-  產生預覽
+產生預覽
 </button>
 
 <button class="secondary" onclick="resetForm()">
-  恢復測試資料
+恢復測試資料
 </button>
 
 </div>
 
 </section>
+
 
 
 <section class="card">
 
 <h2>② 收據預覽</h2>
 
+
 <div class="note">
-目前是「第一個自動套版測試版」。
+
+目前是「第一個自動套版測試版」。<br>
 原始收據圖片作為底圖，因此灰色「沐光」浮水印會保留。
-下一階段再加入手寫簽名、JPG 壓縮、五間民宿設定與本機紀錄。
+
 </div>
+
 
 <br>
 
+
 <div class="preview-wrap">
-  <canvas id="receipt" width="1499" height="1007"></canvas>
+
+<canvas id="receipt" width="1499" height="1007"></canvas>
+
 </div>
+
 
 <div class="actions">
 
 <button class="primary" onclick="downloadJpg()">
-  下載 JPG（測試版）
+下載 JPG（測試版）
 </button>
 
 </div>
 
+
 </section>
+
 
 </main>
 
 
+
 <script>
+
 
 const W=1499;
 const H=1007;
 
+
 const img=new Image();
+
 img.src="receipt-template-m2.png";
+
 
 const $=id=>document.getElementById(id);
 
 
-/* 民國日期 */
+
+/* =========================
+   民國日期
+========================= */
+
 function rocDate(v){
 
   if(!v)return "";
@@ -277,10 +315,15 @@ function rocDate(v){
   const d=new Date(v+"T00:00:00");
 
   return `${d.getFullYear()-1911} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日`;
+
 }
 
 
-/* 金額格式 */
+
+/* =========================
+   金額格式
+========================= */
+
 function money(n){
 
   return Number(n||0).toLocaleString("zh-TW");
@@ -288,7 +331,11 @@ function money(n){
 }
 
 
-/* 畫文字 */
+
+/* =========================
+   畫文字
+========================= */
+
 function drawText(
   ctx,
   text,
@@ -317,14 +364,12 @@ function drawText(
 }
 
 
-/*
-  只清除原模板中的文字區域。
 
-  注意：
-  這裡使用接近原本底圖的白色區塊，
-  不會把 HTML 輸入框的任何背景帶進收據。
-*/
-function cover(ctx,x,y,w,h){
+/* =========================
+   清除頂部文字區域
+========================= */
+
+function clearTop(ctx,x,y,w,h){
 
   ctx.save();
 
@@ -337,9 +382,216 @@ function cover(ctx,x,y,w,h){
 }
 
 
-/* 產生收據 */
+
+/* =========================
+   清除表格文字區域
+========================= */
+
+function clearTableCell(ctx,x,y,w,h){
+
+  ctx.save();
+
+  ctx.fillStyle="#ffffff";
+
+  ctx.fillRect(x,y,w,h);
+
+  ctx.restore();
+
+}
+
+
+
+/* =========================
+   重新繪製表格線
+========================= */
+
+function redrawTableLines(ctx){
+
+  ctx.save();
+
+  ctx.strokeStyle="#bdbdbd";
+
+  ctx.lineWidth=2;
+
+  ctx.setLineDash([4,4]);
+
+
+  const verticalLines=[
+    534,
+    697,
+    875,
+    1080
+  ];
+
+
+  verticalLines.forEach(x=>{
+
+    ctx.beginPath();
+
+    ctx.moveTo(x,330);
+
+    ctx.lineTo(x,750);
+
+    ctx.stroke();
+
+  });
+
+
+  const horizontalLines=[
+    425,
+    465,
+    505,
+    545,
+    585,
+    625,
+    665,
+    705
+  ];
+
+
+  horizontalLines.forEach(y=>{
+
+    ctx.beginPath();
+
+    ctx.moveTo(76,y);
+
+    ctx.lineTo(1080,y);
+
+    ctx.stroke();
+
+  });
+
+
+  ctx.setLineDash([]);
+
+
+  ctx.strokeStyle="#111";
+
+  ctx.lineWidth=2;
+
+
+  const solidLines=[
+    750,
+    810,
+    870,
+    935
+  ];
+
+
+  solidLines.forEach(y=>{
+
+    ctx.beginPath();
+
+    ctx.moveTo(76,y);
+
+    ctx.lineTo(1080,y);
+
+    ctx.stroke();
+
+  });
+
+
+  ctx.restore();
+
+}
+
+
+
+/* ==================================================
+   統一編號／單號
+
+   兩行使用固定欄位定位：
+
+   統一編號： 03796404
+   單   號： 0afb 867-2
+
+   冒號位置完全一致
+================================================== */
+
+function drawCompanyNumbers(ctx,tax,order){
+
+  const labelX=890;
+
+  const valueX=1005;
+
+  const labelY1=190;
+
+  const labelY2=235;
+
+
+  /* 統一編號 */
+
+  drawText(
+    ctx,
+    "統一編號",
+    labelX,
+    labelY1,
+    27,
+    "left"
+  );
+
+
+  drawText(
+    ctx,
+    "：",
+    978,
+    labelY1,
+    27,
+    "left"
+  );
+
+
+  drawText(
+    ctx,
+    tax,
+    valueX,
+    labelY1,
+    27,
+    "left"
+  );
+
+
+  /* 單號 */
+
+  drawText(
+    ctx,
+    "單   號",
+    labelX,
+    labelY2,
+    27,
+    "left"
+  );
+
+
+  drawText(
+    ctx,
+    "：",
+    978,
+    labelY2,
+    27,
+    "left"
+  );
+
+
+  drawText(
+    ctx,
+    order,
+    valueX,
+    labelY2,
+    27,
+    "left"
+  );
+
+}
+
+
+
+/* ==================================================
+   產生收據
+================================================== */
 
 function makeReceipt(){
+
 
   if(!img.complete){
 
@@ -360,6 +612,7 @@ function makeReceipt(){
   ctx.clearRect(0,0,W,H);
 
   ctx.drawImage(img,0,0,W,H);
+
 
 
   /* 取得輸入資料 */
@@ -383,11 +636,19 @@ function makeReceipt(){
   const item=$("item").value.trim();
 
 
-  /* =========================
-     1. 入住日期
-     ========================= */
 
-  cover(ctx,430,108,650,52);
+  /* ==================================================
+     1. 入住日期
+  ================================================== */
+
+  clearTop(
+    ctx,
+    430,
+    108,
+    650,
+    52
+  );
+
 
   drawText(
     ctx,
@@ -399,24 +660,28 @@ function makeReceipt(){
   );
 
 
-  /* =========================
+
+  /* ==================================================
      2. 抬頭
-     
-     有輸入：
-     抬頭：臺灣高等法院
 
-     沒輸入：
-     完全不顯示
-     ========================= */
+     與地址完全相同 X 座標
+  ================================================== */
 
-  cover(ctx,230,158,650,55);
+  clearTop(
+    ctx,
+    75,
+    158,
+    800,
+    55
+  );
+
 
   if(title){
 
     drawText(
       ctx,
       `抬頭：${title}`,
-      235,
+      80,
       190,
       29,
       "left"
@@ -425,31 +690,49 @@ function makeReceipt(){
   }
 
 
-  /* =========================
-     3. 統一編號
-     ========================= */
 
-  cover(ctx,885,158,390,55);
+  /* ==================================================
+     3. 統一編號＋單號
 
-  drawText(
+     先完整清除兩行原始文字，
+     再用固定定位重新繪製。
+  ================================================== */
+
+  clearTop(
     ctx,
-    `統一編號： ${tax}`,
-    890,
-    190,
-    27,
-    "left"
+    885,
+    158,
+    400,
+    110
   );
 
 
-  /* =========================
-     4. 地址
-     ========================= */
+  drawCompanyNumbers(
+    ctx,
+    tax,
+    order
+  );
 
-  cover(ctx,75,205,820,55);
+
+
+  /* ==================================================
+     4. 地址
+
+     與抬頭同一個 X 座標
+  ================================================== */
+
+  clearTop(
+    ctx,
+    75,
+    205,
+    800,
+    55
+  );
+
 
   drawText(
     ctx,
-    addr ? `地址： ${addr}` : "地址：",
+    addr ? `地址：${addr}` : "地址：",
     80,
     235,
     27,
@@ -457,32 +740,19 @@ function makeReceipt(){
   );
 
 
-  /* =========================
-     5. 單號
 
-     把原模板單號文字完整覆蓋，
-     然後重新畫一次。
+  /* ==================================================
+     5. 品名摘要
+  ================================================== */
 
-     左側位置與統一編號對齊。
-     ========================= */
-
-  cover(ctx,1040,205,330,55);
-
-  drawText(
+  clearTableCell(
     ctx,
-    `單號： ${order}`,
-    1045,
-    235,
-    27,
-    "left"
+    77,
+    330,
+    455,
+    95
   );
 
-
-  /* =========================
-     6. 品名摘要
-     ========================= */
-
-  cover(ctx,80,330,440,95);
 
   drawText(
     ctx,
@@ -492,6 +762,7 @@ function makeReceipt(){
     27,
     "center"
   );
+
 
   drawText(
     ctx,
@@ -503,11 +774,19 @@ function makeReceipt(){
   );
 
 
-  /* =========================
-     7. 住宿天數
-     ========================= */
 
-  cover(ctx,535,330,160,95);
+  /* ==================================================
+     6. 天數
+  ================================================== */
+
+  clearTableCell(
+    ctx,
+    535,
+    330,
+    160,
+    95
+  );
+
 
   drawText(
     ctx,
@@ -519,11 +798,19 @@ function makeReceipt(){
   );
 
 
-  /* =========================
-     8. 單價
-     ========================= */
 
-  cover(ctx,695,330,180,95);
+  /* ==================================================
+     7. 單價
+  ================================================== */
+
+  clearTableCell(
+    ctx,
+    697,
+    330,
+    178,
+    95
+  );
+
 
   drawText(
     ctx,
@@ -535,11 +822,19 @@ function makeReceipt(){
   );
 
 
-  /* =========================
-     9. 小計
-     ========================= */
 
-  cover(ctx,875,330,205,95);
+  /* ==================================================
+     8. 總價
+  ================================================== */
+
+  clearTableCell(
+    ctx,
+    875,
+    330,
+    205,
+    95
+  );
+
 
   drawText(
     ctx,
@@ -551,11 +846,19 @@ function makeReceipt(){
   );
 
 
-  /* =========================
-     10. 小計金額
-     ========================= */
 
-  cover(ctx,875,746,205,65);
+  /* ==================================================
+     9. 小計
+  ================================================== */
+
+  clearTableCell(
+    ctx,
+    875,
+    746,
+    205,
+    65
+  );
+
 
   drawText(
     ctx,
@@ -567,11 +870,28 @@ function makeReceipt(){
   );
 
 
-  /* =========================
-     11. 總計金額
-     ========================= */
 
-  cover(ctx,875,870,205,65);
+  /* ==================================================
+     10. 折扣
+
+     目前沒有輸入欄位，
+     保留原模板。
+  ================================================== */
+
+
+
+  /* ==================================================
+     11. 總計
+  ================================================== */
+
+  clearTableCell(
+    ctx,
+    875,
+    870,
+    205,
+    65
+  );
+
 
   drawText(
     ctx,
@@ -583,10 +903,18 @@ function makeReceipt(){
   );
 
 
+
+  /* 最後補回表格線 */
+
+  redrawTableLines(ctx);
+
 }
 
 
-/* 下載 JPG */
+
+/* ==================================================
+   下載 JPG
+================================================== */
 
 function downloadJpg(){
 
@@ -594,18 +922,19 @@ function downloadJpg(){
 
   const a=document.createElement("a");
 
-  a.download=
-    `沐光民宿二館_收據.jpg`;
+  a.download="沐光民宿二館_收據.jpg";
 
-  a.href=
-    c.toDataURL("image/jpeg",.88);
+  a.href=c.toDataURL("image/jpeg",0.88);
 
   a.click();
 
 }
 
 
-/* 恢復測試資料 */
+
+/* ==================================================
+   恢復測試資料
+================================================== */
 
 function resetForm(){
 
@@ -630,9 +959,13 @@ function resetForm(){
 }
 
 
-/* 初始載入 */
+
+/* ==================================================
+   初始載入
+================================================== */
 
 img.onload=makeReceipt;
+
 
 </script>
 
