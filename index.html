@@ -3,13 +3,11 @@
 
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#174a8b">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>民宿電子收據系統｜沐光民宿二館</title>
 
 <style>
-
 *{
   box-sizing:border-box;
 }
@@ -18,12 +16,17 @@ body{
   margin:0;
   background:#f3f6fa;
   color:#172033;
-  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC",sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Noto Sans TC",
+    "PingFang TC",
+    sans-serif;
 }
 
 header{
   background:#174a8b;
-  color:white;
+  color:#fff;
   padding:20px;
 }
 
@@ -33,8 +36,8 @@ header{
 }
 
 h1{
-  font-size:24px;
   margin:0 0 6px;
+  font-size:24px;
 }
 
 header p{
@@ -47,7 +50,7 @@ main{
 }
 
 .card{
-  background:white;
+  background:#fff;
   border-radius:18px;
   padding:18px;
   margin-bottom:18px;
@@ -55,8 +58,8 @@ main{
 }
 
 h2{
-  font-size:19px;
   margin:0 0 15px;
+  font-size:19px;
 }
 
 .form{
@@ -66,8 +69,8 @@ h2{
 }
 
 label{
-  font-weight:700;
   font-size:14px;
+  font-weight:700;
 }
 
 input{
@@ -119,7 +122,7 @@ button{
 canvas{
   max-width:100%;
   height:auto;
-  background:white;
+  background:#fff;
   box-shadow:0 2px 8px #0002;
 }
 
@@ -148,31 +151,22 @@ canvas{
   button{
     width:100%;
   }
-
 }
-
 </style>
 
 </head>
 
-
 <body>
 
 <header>
-
-<div class="wrap">
-
-<h1>🏠 民宿電子收據系統</h1>
-
-<p>第一個可填寫版本｜沐光民宿二館</p>
-
-</div>
-
+  <div class="wrap">
+    <h1>🏠 民宿電子收據系統</h1>
+    <p>PNG 測試版｜沐光民宿二館</p>
+  </div>
 </header>
 
 
 <main class="wrap">
-
 
 <section class="card">
 
@@ -180,72 +174,61 @@ canvas{
 
 <div class="form">
 
-
 <label>
-入住日期
-<input id="date" type="date" value="2024-12-12">
+  入住日期
+  <input id="date" type="date" value="2024-12-12">
 </label>
 
-
 <label>
-住宿天數
-<input id="nights" type="number" min="1" value="1">
+  住宿天數
+  <input id="nights" type="number" min="1" value="1">
 </label>
 
-
 <label>
-單價
-<input id="price" type="number" min="0" value="2000">
+  單價
+  <input id="price" type="number" min="0" value="2000">
 </label>
 
-
 <label>
-抬頭
-<input id="title" value="臺灣高等法院">
+  抬頭
+  <input id="title" value="臺灣高等法院">
 </label>
 
-
 <label>
-統一編號
-<input id="tax" value="03796404">
+  統一編號
+  <input id="tax" value="03796404">
 </label>
 
-
 <label>
-訂單編號
-<input id="order" value="0afb 867-2">
+  單號
+  <input id="order" value="0afb 867-2">
 </label>
 
-
 <label>
-地址
-<input id="address" value="">
+  地址
+  <input id="address" value="">
 </label>
-
 
 <label class="full">
-品名摘要
-<input id="item" value="沐光 住宿公務保留房費">
+  品名摘要
+  <input id="item" value="沐光 住宿公務保留房費">
 </label>
 
-
 </div>
-
 
 <div class="actions">
 
 <button class="primary" onclick="makeReceipt()">
-產生預覽
+  產生預覽
 </button>
 
 <button class="secondary" onclick="resetForm()">
-恢復測試資料
+  恢復測試資料
 </button>
 
 </div>
 
 </section>
-
 
 
 <section class="card">
@@ -253,54 +236,46 @@ canvas{
 <h2>② 收據預覽</h2>
 
 <div class="note">
-
-輸入資料會直接套用到原始收據版型。<br>
-不會再把輸入欄位的背景色合成到收據裡。
-
+  本版本直接使用原始收據模板尺寸，不再使用固定的
+  1499 × 1007 尺寸。新增文字以透明圖層方式合成，
+  最終下載 PNG；若檔案超過 1MB，系統會自動縮小。
 </div>
 
 <br>
 
 <div class="preview-wrap">
-
-<canvas id="receipt"></canvas>
-
+  <canvas id="receipt"></canvas>
 </div>
 
 <div class="actions">
 
-<button class="primary" onclick="downloadJpg()">
-下載 JPG（測試版）
+<button class="primary" onclick="downloadPng()">
+  下載 PNG（1MB 以下）
 </button>
 
 </div>
 
 </section>
 
-
 </main>
-
 
 
 <script>
 
-
 /* =========================================================
-   原始收據圖片
-========================================================= */
+   原始模板
+   ========================================================= */
 
 const img = new Image();
 
 img.src = "receipt-template-m2.png";
 
-
 const $ = id => document.getElementById(id);
-
 
 
 /* =========================================================
    民國日期
-========================================================= */
+   ========================================================= */
 
 function rocDate(value){
 
@@ -308,44 +283,47 @@ function rocDate(value){
     return "";
   }
 
-  const d = new Date(value + "T00:00:00");
+  const d =
+    new Date(value + "T00:00:00");
 
-  return `${d.getFullYear()-1911} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日`;
-
+  return (
+    `${d.getFullYear()-1911} 年 ` +
+    `${d.getMonth()+1} 月 ` +
+    `${d.getDate()} 日`
+  );
 }
-
 
 
 /* =========================================================
    金額格式
-========================================================= */
+   ========================================================= */
 
 function money(value){
 
-  return Number(value || 0).toLocaleString("zh-TW");
-
+  return Number(value || 0)
+    .toLocaleString("zh-TW");
 }
 
 
-
 /* =========================================================
-   Canvas 文字
-========================================================= */
+   文字
+   ========================================================= */
 
 function drawText(
   ctx,
   text,
   x,
   y,
-  size = 27,
-  align = "left",
-  weight = "400"
+  size=18,
+  align="left",
+  weight="400"
 ){
 
   ctx.save();
 
   ctx.font =
-    `${weight} ${size}px -apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC",sans-serif`;
+    `${weight} ${size}px ` +
+    `"Noto Sans TC","PingFang TC",sans-serif`;
 
   ctx.fillStyle = "#111";
 
@@ -353,30 +331,22 @@ function drawText(
 
   ctx.textBaseline = "middle";
 
-  ctx.fillText(text,x,y);
+  ctx.fillText(
+    text,
+    x,
+    y
+  );
 
   ctx.restore();
-
 }
 
 
-
 /* =========================================================
-   非破壞式清除文字
-
-   重要：
-
-   這裡「不是」用白色矩形蓋掉。
-
-   只處理接近黑色的原始文字像素，
-   因此：
-
-   ✓ 灰色浮水印保留
-   ✓ 表格線保留
-   ✓ 店章保留
-   ✓ 收據底圖保留
-
-========================================================= */
+   清除原模板深色文字
+   ---------------------------------------------------------
+   不使用 fillRect 白色方塊。
+   只處理深色像素，盡量保留灰色浮水印。
+   ========================================================= */
 
 function eraseDarkText(
   ctx,
@@ -384,28 +354,48 @@ function eraseDarkText(
   y,
   width,
   height,
-  threshold = 120
+  threshold=120
 ){
 
+  x = Math.max(0,Math.floor(x));
+  y = Math.max(0,Math.floor(y));
+
+  width =
+    Math.min(
+      Math.floor(width),
+      ctx.canvas.width - x
+    );
+
+  height =
+    Math.min(
+      Math.floor(height),
+      ctx.canvas.height - y
+    );
+
+  if(width <= 0 || height <= 0){
+    return;
+  }
+
   const imageData =
-    ctx.getImageData(x,y,width,height);
+    ctx.getImageData(
+      x,
+      y,
+      width,
+      height
+    );
 
   const data =
     imageData.data;
 
-
   for(let i=0;i<data.length;i+=4){
 
-    const r = data[i];
-    const g = data[i+1];
-    const b = data[i+2];
-
+    const r=data[i];
+    const g=data[i+1];
+    const b=data[i+2];
 
     /*
-      只抓深色／黑色文字。
-
-      灰色浮水印通常比這個值亮，
-      因此不會被清除。
+      只有真正偏黑的文字才處理。
+      灰色浮水印盡量保留。
     */
 
     if(
@@ -414,286 +404,30 @@ function eraseDarkText(
       b < threshold
     ){
 
-      /*
-        改成白色。
-        
-        這不是「白色底圖覆蓋」，
-        而是只把原本的黑色文字像素
-        還原成該區域的白色背景。
-      */
-
-      data[i] = 255;
+      data[i]   = 255;
       data[i+1] = 255;
       data[i+2] = 255;
       data[i+3] = 255;
 
     }
-
   }
 
-
-  ctx.putImageData(imageData,x,y);
-
+  ctx.putImageData(
+    imageData,
+    x,
+    y
+  );
 }
 
 
-
 /* =========================================================
-   清除頂部黑色文字
+   建立透明文字圖層
+   ========================================================= */
 
-   頂部沒有浮水印，所以可以直接清除。
-========================================================= */
-
-function clearHeaderText(
-  ctx,
-  x,
-  y,
-  width,
-  height
-){
-
-  ctx.save();
-
-  ctx.fillStyle = "#fff";
-
-  ctx.fillRect(x,y,width,height);
-
-  ctx.restore();
-
-}
-
-
-
-/* =========================================================
-   重新畫表格線
-
-   只補被清除文字碰到的線。
-========================================================= */
-
-function drawTableLines(ctx){
-
-  ctx.save();
-
-  ctx.strokeStyle = "#bdbdbd";
-
-  ctx.lineWidth = 1;
-
-  ctx.setLineDash([3,3]);
-
-
-  /*
-    表格垂直線
-  */
-
-  const vertical = [
-    356,
-    465,
-    585,
-    724
-  ];
-
-
-  vertical.forEach(x => {
-
-    ctx.beginPath();
-
-    ctx.moveTo(x,223);
-
-    ctx.lineTo(x,501);
-
-    ctx.stroke();
-
-  });
-
-
-  /*
-    表格水平虛線
-  */
-
-  const horizontal = [
-    291,
-    333,
-    376,
-    419,
-    461
-  ];
-
-
-  horizontal.forEach(y => {
-
-    ctx.beginPath();
-
-    ctx.moveTo(51,y);
-
-    ctx.lineTo(724,y);
-
-    ctx.stroke();
-
-  });
-
-
-  ctx.setLineDash([]);
-
-
-  /*
-    小計、折扣、總計區域
-  */
-
-  ctx.strokeStyle = "#111";
-
-  ctx.lineWidth = 2;
-
-
-  const solid = [
-    501,
-    585,
-    629
-  ];
-
-
-  solid.forEach(y => {
-
-    ctx.beginPath();
-
-    ctx.moveTo(51,y);
-
-    ctx.lineTo(963,y);
-
-    ctx.stroke();
-
-  });
-
-
-  ctx.restore();
-
-}
-
-
-
-/* =========================================================
-   頂部「統一編號 / 單號」
-
-   固定成：
-
-   統一編號： 03796404
-   單   號： 0afb 867-2
-
-   冒號使用完全相同 X 座標。
-========================================================= */
-
-function drawNumbers(
-  ctx,
-  tax,
-  order
-){
-
-  /*
-    所有定位以原始收據為準。
-  */
-
-  const labelX = 600;
-
-  const colonX = 680;
-
-  const valueX = 700;
-
-
-  const y1 = 124;
-
-  const y2 = 156;
-
-
-  /* 統一編號 */
-
-  drawText(
-    ctx,
-    "統一編號",
-    labelX,
-    y1,
-    19,
-    "left"
-  );
-
-
-  drawText(
-    ctx,
-    "：",
-    colonX,
-    y1,
-    19,
-    "left"
-  );
-
-
-  drawText(
-    ctx,
-    tax,
-    valueX,
-    y1,
-    19,
-    "left"
-  );
-
-
-  /* 單號 */
-
-  drawText(
-    ctx,
-    "單   號",
-    labelX,
-    y2,
-    19,
-    "left"
-  );
-
-
-  drawText(
-    ctx,
-    "：",
-    colonX,
-    y2,
-    19,
-    "left"
-  );
-
-
-  drawText(
-    ctx,
-    order,
-    valueX,
-    y2,
-    19,
-    "left"
-  );
-
-}
-
-
-
-/* =========================================================
-   產生收據
-========================================================= */
-
-function makeReceipt(){
-
-  if(!img.complete){
-
-    img.onload = makeReceipt;
-
-    return;
-
-  }
-
-
-  /*
-    直接使用原始圖片尺寸。
-
-    不再硬塞 1499 x 1007，
-    避免定位比例跑掉。
-  */
+function createOverlay(){
 
   const canvas =
-    $("receipt");
+    document.createElement("canvas");
 
   canvas.width =
     img.naturalWidth;
@@ -701,22 +435,63 @@ function makeReceipt(){
   canvas.height =
     img.naturalHeight;
 
+  return canvas;
+}
+
+
+/* =========================================================
+   產生收據
+   ========================================================= */
+
+function makeReceipt(){
+
+  if(
+    !img.complete ||
+    !img.naturalWidth
+  ){
+
+    img.onload =
+      makeReceipt;
+
+    return;
+  }
+
+
+  /*
+    非常重要：
+
+    直接使用模板實際尺寸。
+    不再寫死 1499 × 1007。
+  */
+
+  const W =
+    img.naturalWidth;
+
+  const H =
+    img.naturalHeight;
+
+
+  const canvas =
+    $("receipt");
+
+  canvas.width = W;
+  canvas.height = H;
+
 
   const ctx =
     canvas.getContext("2d");
 
 
   /*
-    重新畫原始收據
+    清空後重新放入原始模板。
   */
 
   ctx.clearRect(
     0,
     0,
-    canvas.width,
-    canvas.height
+    W,
+    H
   );
-
 
   ctx.drawImage(
     img,
@@ -725,19 +500,33 @@ function makeReceipt(){
   );
 
 
+  /*
+    建立透明文字圖層。
+  */
 
-  /* =====================================================
-     讀取資料
-  ===================================================== */
+  const overlay =
+    createOverlay();
+
+  const octx =
+    overlay.getContext("2d");
+
+
+  /* =======================================================
+     取得資料
+     ======================================================= */
 
   const date =
     $("date").value;
 
   const nights =
-    Number($("nights").value || 1);
+    Number(
+      $("nights").value || 1
+    );
 
   const price =
-    Number($("price").value || 0);
+    Number(
+      $("price").value || 0
+    );
 
   const total =
     nights * price;
@@ -758,372 +547,586 @@ function makeReceipt(){
     $("item").value.trim();
 
 
+  /* =======================================================
+     日期
+     ======================================================= */
 
-  /* =====================================================
-     ① 日期
-
-     原始位置約：
-     中央 / y 94
-  ===================================================== */
-
-  clearHeaderText(
+  eraseDarkText(
     ctx,
+    350,
+    72,
     300,
-    75,
-    400,
-    40
+    50
   );
 
-
   drawText(
-    ctx,
+    octx,
     rocDate(date),
     500,
     94,
-    19,
+    18,
     "center"
   );
 
 
+  /* =======================================================
+     抬頭
+     -------------------------------------------------------
+     與地址 X 起點完全相同。
+     ======================================================= */
 
-  /* =====================================================
-     ② 抬頭
-
-     ★ 與地址使用完全相同 X = 60
-
-     有輸入：
-     抬頭：臺灣高等法院
-
-     沒輸入：
-     完全不顯示
-  ===================================================== */
-
-  clearHeaderText(
+  eraseDarkText(
     ctx,
     45,
     105,
-    530,
+    480,
     40
   );
-
 
   if(title){
 
     drawText(
-      ctx,
+      octx,
       `抬頭：${title}`,
       60,
       124,
-      19,
+      18,
       "left"
     );
 
   }
 
 
+  /* =======================================================
+     統一編號
+     -------------------------------------------------------
+     labelX / colonX / valueX 固定。
+     ======================================================= */
 
-  /* =====================================================
-     ③ 統一編號 / 單號
-
-     先清掉原始底圖兩行文字。
-
-     這是解決「出現兩個單號」的關鍵。
-  ===================================================== */
-
-  clearHeaderText(
+  eraseDarkText(
     ctx,
-    575,
+    570,
     105,
-    270,
-    70
+    300,
+    35
   );
 
+  const labelX = 600;
+  const colonX = 680;
+  const valueX = 700;
 
-  drawNumbers(
-    ctx,
-    tax,
-    order
-  );
-
-
-
-  /* =====================================================
-     ④ 地址
-
-     ★ X = 60
-     與抬頭完全齊頭
-  ===================================================== */
-
-  clearHeaderText(
-    ctx,
-    45,
-    140,
-    520,
-    30
-  );
+  const numberY1 = 124;
+  const numberY2 = 157;
 
 
   drawText(
-    ctx,
-    address
-      ? `地址： ${address}`
-      : "地址：",
-    60,
-    157,
-    19,
+    octx,
+    "統一編號",
+    labelX,
+    numberY1,
+    18,
+    "left"
+  );
+
+  drawText(
+    octx,
+    "：",
+    colonX,
+    numberY1,
+    18,
+    "left"
+  );
+
+  drawText(
+    octx,
+    tax,
+    valueX,
+    numberY1,
+    18,
     "left"
   );
 
 
-
-  /* =====================================================
-     ⑤ 品名第一列
-
-     只清除原本的黑色文字。
-
-     不覆蓋灰色「沐光」浮水印。
-  ===================================================== */
+  /* =======================================================
+     地址
+     ======================================================= */
 
   eraseDarkText(
     ctx,
-    55,
-    225,
-    295,
-    65,
-    130
+    45,
+    135,
+    500,
+    35
+  );
+
+  drawText(
+    octx,
+    address
+      ? `地址：${address}`
+      : "地址：",
+    60,
+    157,
+    18,
+    "left"
   );
 
 
-  drawText(
+  /* =======================================================
+     單號
+     -------------------------------------------------------
+     與統一編號完全使用相同 X。
+     ======================================================= */
+
+  eraseDarkText(
     ctx,
+    570,
+    135,
+    300,
+    35
+  );
+
+  drawText(
+    octx,
+    "單   號",
+    labelX,
+    numberY2,
+    18,
+    "left"
+  );
+
+  drawText(
+    octx,
+    "：",
+    colonX,
+    numberY2,
+    18,
+    "left"
+  );
+
+  drawText(
+    octx,
+    order,
+    valueX,
+    numberY2,
+    18,
+    "left"
+  );
+
+
+  /* =======================================================
+     品名
+     ======================================================= */
+
+  eraseDarkText(
+    ctx,
+    60,
+    230,
+    285,
+    52
+  );
+
+  drawText(
+    octx,
     item,
     203,
-    246,
-    18,
-    "center",
-    "600"
-  );
-
-
-  drawText(
-    ctx,
-    `《${date ? date.slice(5).replace("-","/") : ""}》`,
-    203,
-    270,
+    248,
     17,
     "center"
   );
 
 
-
-  /* =====================================================
-     ⑥ 天數
-  ===================================================== */
+  /* =======================================================
+     日期小字
+     ======================================================= */
 
   eraseDarkText(
     ctx,
-    360,
-    225,
-    100,
-    65,
-    130
+    90,
+    252,
+    230,
+    30
   );
 
-
   drawText(
-    ctx,
-    String(nights),
-    410,
-    256,
-    19,
+    octx,
+    date
+      ? `《${date.slice(5).replace("-","/")}》`
+      : "",
+    203,
+    270,
+    16,
     "center"
   );
 
 
-
-  /* =====================================================
-     ⑦ 單價
-  ===================================================== */
+  /* =======================================================
+     住宿天數
+     ======================================================= */
 
   eraseDarkText(
     ctx,
-    470,
-    225,
-    110,
-    65,
-    130
+    370,
+    230,
+    85,
+    52
   );
 
-
   drawText(
-    ctx,
-    `$ ${money(price)}`,
-    525,
-    256,
+    octx,
+    String(nights),
+    411,
+    257,
     18,
     "center"
   );
 
 
+  /* =======================================================
+     單價
+     ======================================================= */
 
-  /* =====================================================
-     ⑧ 總價
-  ===================================================== */
+  eraseDarkText(
+    ctx,
+    475,
+    230,
+    105,
+    52
+  );
+
+  drawText(
+    octx,
+    `$ ${money(price)}`,
+    525,
+    257,
+    17,
+    "center"
+  );
+
+
+  /* =======================================================
+     第一列小計
+     ======================================================= */
 
   eraseDarkText(
     ctx,
     590,
-    225,
-    130,
-    65,
-    130
+    230,
+    125,
+    52
   );
 
-
   drawText(
-    ctx,
+    octx,
     `$ ${money(total)}`,
-    655,
-    256,
-    18,
+    654,
+    257,
+    17,
     "center"
   );
 
 
-
-  /* =====================================================
-     ⑨ 原本「===以下空白===」
-
-     移除這個模板文字。
-
-     只清除黑色文字，
-     不影響浮水印。
-  ===================================================== */
+  /* =======================================================
+     ===以下空白===
+     ======================================================= */
 
   eraseDarkText(
     ctx,
     55,
-    292,
+    295,
     180,
-    35,
-    130
+    30
   );
 
 
-
-  /* =====================================================
-     ⑩ 小計
-
-     原本的小計金額保留版面，
-     只清掉舊數字，再畫新的。
-  ===================================================== */
+  /* =======================================================
+     下方小計
+     ======================================================= */
 
   eraseDarkText(
     ctx,
-    585,
-    500,
-    140,
-    40,
-    130
+    640,
+    505,
+    80,
+    32
   );
-
 
   drawText(
-    ctx,
+    octx,
     `$${money(total)}`,
-    680,
-    521,
-    18,
-    "right"
+    685,
+    522,
+    17,
+    "center"
   );
 
 
-
-  /* =====================================================
-     ⑪ 折扣
-
-     原模板「折扣」保留。
-     目前沒有折扣輸入欄位，
-     所以不重新產生數字。
-  ===================================================== */
+  /* =======================================================
+     折扣
+     -------------------------------------------------------
+     目前尚未建立折扣輸入欄，
+     因此保留模板原有「折扣」文字。
+     ======================================================= */
 
 
-
-  /* =====================================================
-     ⑫ 總計
-
-     清除原模板總計金額，
-     再輸出新的總計。
-  ===================================================== */
+  /* =======================================================
+     下方總計
+     ======================================================= */
 
   eraseDarkText(
     ctx,
-    585,
-    586,
-    140,
-    40,
-    130
+    640,
+    590,
+    80,
+    32
   );
-
 
   drawText(
-    ctx,
+    octx,
     `$${money(total)}`,
-    680,
-    608,
-    18,
-    "right"
+    685,
+    607,
+    17,
+    "center"
   );
 
 
+  /* =======================================================
+     最後才把透明文字圖層合成
+     ======================================================= */
 
-  /*
-    最後補回表格線。
-
-    只處理線條，
-    不覆蓋浮水印。
-  */
-
-  drawTableLines(ctx);
+  ctx.drawImage(
+    overlay,
+    0,
+    0
+  );
 
 }
 
 
+/* =========================================================
+   Canvas → PNG Blob
+   ========================================================= */
+
+function canvasToBlob(canvas){
+
+  return new Promise(resolve => {
+
+    canvas.toBlob(
+      blob => resolve(blob),
+      "image/png"
+    );
+
+  });
+
+}
+
 
 /* =========================================================
-   JPG 下載
-========================================================= */
+   下載 PNG
+   ---------------------------------------------------------
+   最大 1MB
+   ========================================================= */
 
-function downloadJpg(){
+async function downloadPng(){
 
-  const canvas =
+  const source =
     $("receipt");
 
+  const MAX_SIZE =
+    1024 * 1024;
+
+
+  if(
+    !source.width ||
+    !source.height
+  ){
+
+    makeReceipt();
+
+  }
+
+
+  /*
+    先嘗試原始尺寸。
+  */
+
+  let blob =
+    await canvasToBlob(source);
+
+  let exportCanvas =
+    source;
+
+
+  /*
+    超過 1MB 才縮小。
+  */
+
+  if(blob.size > MAX_SIZE){
+
+    let scale = 0.95;
+
+    while(
+      blob.size > MAX_SIZE &&
+      scale >= 0.50
+    ){
+
+      const c =
+        document.createElement("canvas");
+
+      c.width =
+        Math.floor(
+          source.width * scale
+        );
+
+      c.height =
+        Math.floor(
+          source.height * scale
+        );
+
+
+      const cctx =
+        c.getContext("2d");
+
+      cctx.imageSmoothingEnabled =
+        true;
+
+      cctx.imageSmoothingQuality =
+        "high";
+
+
+      cctx.drawImage(
+        source,
+        0,
+        0,
+        c.width,
+        c.height
+      );
+
+
+      const newBlob =
+        await canvasToBlob(c);
+
+
+      exportCanvas =
+        c;
+
+      blob =
+        newBlob;
+
+      scale -= 0.05;
+
+    }
+
+  }
+
+
+  /*
+    如果仍然超過 1MB，
+    最後再做一次比例縮小。
+  */
+
+  if(blob.size > MAX_SIZE){
+
+    const scale =
+      Math.sqrt(
+        MAX_SIZE / blob.size
+      ) * 0.95;
+
+    const c =
+      document.createElement("canvas");
+
+    c.width =
+      Math.floor(
+        source.width * scale
+      );
+
+    c.height =
+      Math.floor(
+        source.height * scale
+      );
+
+    const cctx =
+      c.getContext("2d");
+
+    cctx.imageSmoothingEnabled =
+      true;
+
+    cctx.imageSmoothingQuality =
+      "high";
+
+    cctx.drawImage(
+      source,
+      0,
+      0,
+      c.width,
+      c.height
+    );
+
+    blob =
+      await canvasToBlob(c);
+
+    exportCanvas =
+      c;
+
+  }
+
+
+  /*
+    最終安全檢查。
+  */
+
+  if(blob.size > MAX_SIZE){
+
+    alert(
+      "目前 PNG 仍超過 1MB，請稍微降低圖片尺寸後再試。"
+    );
+
+    return;
+  }
+
+
+  /*
+    開始下載。
+  */
+
+  const url =
+    URL.createObjectURL(blob);
 
   const a =
     document.createElement("a");
 
+  a.href =
+    url;
 
   a.download =
-    "沐光民宿二館_收據.jpg";
+    "沐光民宿二館_收據.png";
 
-
-  a.href =
-    canvas.toDataURL(
-      "image/jpeg",
-      0.92
-    );
-
+  document.body.appendChild(a);
 
   a.click();
+
+  a.remove();
+
+
+  setTimeout(
+    () => URL.revokeObjectURL(url),
+    1000
+  );
+
+
+  const kb =
+    (blob.size / 1024).toFixed(1);
+
+  alert(
+    `PNG 已產生\n檔案大小：約 ${kb} KB`
+  );
 
 }
 
 
-
 /* =========================================================
    恢復測試資料
-========================================================= */
+   ========================================================= */
 
 function resetForm(){
 
@@ -1131,10 +1134,10 @@ function resetForm(){
     "2024-12-12";
 
   $("nights").value =
-    1;
+    "1";
 
   $("price").value =
-    2000;
+    "2000";
 
   $("title").value =
     "臺灣高等法院";
@@ -1157,14 +1160,12 @@ function resetForm(){
 }
 
 
-
 /* =========================================================
-   初始載入
-========================================================= */
+   初始產生
+   ========================================================= */
 
 img.onload =
   makeReceipt;
-
 
 </script>
 
