@@ -8,6 +8,7 @@
 <title>沐光民宿二館｜電子收據</title>
 
 <style>
+
   :root {
     --blue: #397b9f;
   }
@@ -21,6 +22,7 @@
     padding: 24px;
     background: #f5f5f5;
     color: #222;
+
     font-family:
       -apple-system,
       BlinkMacSystemFont,
@@ -46,12 +48,16 @@
     border: 1px solid #ddd;
     border-radius: 12px;
     padding: 18px;
-    box-shadow: 0 2px 10px rgba(0,0,0,.05);
+
+    box-shadow:
+      0 2px 10px rgba(0,0,0,.05);
   }
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
     gap: 12px 16px;
   }
 
@@ -64,9 +70,12 @@
   input {
     width: 100%;
     padding: 10px 11px;
+
     border: 1px solid #bbb;
     border-radius: 7px;
+
     background: #fff;
+
     font-size: 16px;
   }
 
@@ -83,10 +92,13 @@
 
   button {
     padding: 11px 18px;
+
     border: 0;
     border-radius: 8px;
+
     font-size: 16px;
     font-weight: 700;
+
     cursor: pointer;
   }
 
@@ -108,6 +120,7 @@
   .status {
     min-height: 22px;
     margin-top: 10px;
+
     color: #555;
     font-size: 14px;
   }
@@ -115,7 +128,9 @@
   .preview {
     margin-top: 18px;
     padding: 10px;
+
     overflow: auto;
+
     border-radius: 8px;
     background: #eee;
   }
@@ -127,6 +142,7 @@
   }
 
   @media (max-width: 700px) {
+
     body {
       padding: 12px;
     }
@@ -138,27 +154,54 @@
     .full {
       grid-column: auto;
     }
+
   }
+
 </style>
 </head>
 
+
 <body>
+
 
 <div class="wrap">
 
-  <h1>沐光民宿二館｜免用統一發票 電子收據</h1>
+
+  <h1>
+    沐光民宿二館｜免用統一發票 電子收據
+  </h1>
+
 
   <div class="panel">
 
+
     <div class="grid">
 
-      <div>
-        <label for="date">日期</label>
-        <input id="date" type="date">
-      </div>
+
+      <!-- 日期 -->
 
       <div>
-        <label for="nights">天數</label>
+
+        <label for="date">
+          日期
+        </label>
+
+        <input
+          id="date"
+          type="date"
+        >
+
+      </div>
+
+
+      <!-- 天數 -->
+
+      <div>
+
+        <label for="nights">
+          天數
+        </label>
+
         <input
           id="nights"
           type="number"
@@ -166,10 +209,18 @@
           step="1"
           value="1"
         >
+
       </div>
 
+
+      <!-- 單價 -->
+
       <div>
-        <label for="price">單價</label>
+
+        <label for="price">
+          單價
+        </label>
+
         <input
           id="price"
           type="number"
@@ -177,80 +228,143 @@
           step="1"
           value="0"
         >
+
       </div>
 
+
+      <!-- 統一編號 -->
+
       <div>
-        <label for="taxId">統一編號</label>
+
+        <label for="taxId">
+          統一編號
+        </label>
+
         <input
           id="taxId"
           type="text"
           value="03796404"
           maxlength="20"
         >
+
       </div>
 
+
+      <!-- 單號 -->
+
       <div>
-        <label for="orderNo">單號</label>
+
+        <label for="orderNo">
+          單號
+        </label>
+
         <input
           id="orderNo"
           type="text"
           maxlength="30"
         >
+
       </div>
 
+
+      <!-- 抬頭 -->
+
       <div>
-        <label for="title">抬頭（可留空）</label>
+
+        <label for="title">
+          抬頭（可留空）
+        </label>
+
         <input
           id="title"
           type="text"
           placeholder="留空則不顯示「抬頭：」"
         >
+
       </div>
 
+
+      <!-- 地址 -->
+
       <div class="full">
-        <label for="address">地址</label>
+
+        <label for="address">
+          地址
+        </label>
+
         <input
           id="address"
           type="text"
           placeholder="請輸入地址"
         >
+
       </div>
 
+
+      <!-- 品名摘要 -->
+
       <div class="full">
-        <label for="item">品名摘要</label>
+
+        <label for="item">
+          品名摘要
+        </label>
+
         <input
           id="item"
           type="text"
           value="住宿費"
         >
+
       </div>
+
 
     </div>
 
+
+    <!-- 下載按鈕 -->
+
     <div class="buttons">
 
-      <button id="downloadPng" type="button">
+      <button
+        id="downloadPng"
+        type="button"
+      >
         下載 PNG
       </button>
 
-      <button id="downloadJpg" type="button">
+
+      <button
+        id="downloadJpg"
+        type="button"
+      >
         下載 JPG
       </button>
 
     </div>
 
-    <div id="status" class="status"></div>
+
+    <div
+      id="status"
+      class="status"
+    ></div>
+
+
+    <!-- 預覽 -->
 
     <div class="preview">
+
       <img
         id="previewImg"
         alt="收據預覽"
       >
+
     </div>
+
 
   </div>
 
 </div>
+
 
 
 <script>
@@ -259,57 +373,118 @@
 
 
 /* =========================================================
-   模板設定
+   模板
    ========================================================= */
 
-const TEMPLATE = "receipt-template-1.png";
+const TEMPLATE =
+  "receipt-template-1.png";
+
 
 /*
-  最新模板實際尺寸
+  最新模板實際尺寸：
+
   2506 × 1436 px
 */
+
 const W = 2506;
 const H = 1436;
 
-const TARGET_MAX_BYTES = 1024 * 1024;
+
+/*
+  最大檔案大小：
+
+  1 MB
+*/
+
+const TARGET_MAX_BYTES =
+  1024 * 1024;
 
 
 /* =========================================================
-   收據文字統一字體大小
-   與模板「小計」使用同一基準
-   ========================================================= */
+   收據文字標準字體大小
+   =========================================================
 
-const RECEIPT_FONT_SIZE = 30;
+   這次提高到 60 px。
+
+   之前 30 px 明顯太小。
+*/
+
+const RECEIPT_FONT_SIZE = 60;
 
 
 /* =========================================================
-   取得表單元素
+   模板上方標題實際範圍
+   =========================================================
+
+   根據目前提供的模板實際像素位置：
+
+   左：
+   X ≈ 700
+
+   右：
+   X ≈ 1824
+
+   日期將使用這個範圍展開。
+*/
+
+const DATE_LEFT_X = 700;
+const DATE_RIGHT_X = 1824;
+
+
+/* =========================================================
+   表單
    ========================================================= */
 
-const $ = id => document.getElementById(id);
+const $ =
+  id => document.getElementById(id);
 
-const dateEl = $("date");
-const nightsEl = $("nights");
-const priceEl = $("price");
-const taxIdEl = $("taxId");
-const orderNoEl = $("orderNo");
-const titleEl = $("title");
-const addressEl = $("address");
-const itemEl = $("item");
 
-const previewImg = $("previewImg");
-const statusEl = $("status");
+const dateEl =
+  $("date");
 
-let lastCanvas = null;
+const nightsEl =
+  $("nights");
+
+const priceEl =
+  $("price");
+
+const taxIdEl =
+  $("taxId");
+
+const orderNoEl =
+  $("orderNo");
+
+const titleEl =
+  $("title");
+
+const addressEl =
+  $("address");
+
+const itemEl =
+  $("item");
+
+
+const previewImg =
+  $("previewImg");
+
+const statusEl =
+  $("status");
+
+
+let lastCanvas =
+  null;
 
 
 /* =========================================================
    載入模板
    ========================================================= */
 
-const img = new Image();
+const img =
+  new Image();
 
-img.src = TEMPLATE;
+
+img.src =
+  TEMPLATE;
 
 
 /* =========================================================
@@ -318,17 +493,25 @@ img.src = TEMPLATE;
 
 function setDefaultDate() {
 
-  const d = new Date();
+  const d =
+    new Date();
 
-  const yyyy = d.getFullYear();
 
-  const mm = String(
-    d.getMonth() + 1
-  ).padStart(2, "0");
+  const yyyy =
+    d.getFullYear();
 
-  const dd = String(
-    d.getDate()
-  ).padStart(2, "0");
+
+  const mm =
+    String(
+      d.getMonth() + 1
+    ).padStart(2, "0");
+
+
+  const dd =
+    String(
+      d.getDate()
+    ).padStart(2, "0");
+
 
   dateEl.value =
     `${yyyy}-${mm}-${dd}`;
@@ -336,91 +519,117 @@ function setDefaultDate() {
 
 
 /* =========================================================
-   西元日期 → 民國正式日期
+   西元 → 中華民國日期
    =========================================================
-
-   例如：
 
    2026-09-05
 
    →
 
-   民國115年9月5日
+   中華民國115年9月5日
    ========================================================= */
 
-function formatROCDate(dateString) {
+function formatROCDate(
+  dateString
+) {
 
   if (!dateString) {
+
     return "";
   }
+
 
   const parts =
     dateString.split("-");
 
-  if (parts.length !== 3) {
+
+  if (
+    parts.length !== 3
+  ) {
+
     return dateString;
   }
+
 
   const year =
     Number(parts[0]);
 
+
   const month =
     Number(parts[1]);
 
+
   const day =
     Number(parts[2]);
+
 
   if (
     !year ||
     !month ||
     !day
   ) {
+
     return dateString;
   }
+
 
   const rocYear =
     year - 1911;
 
+
   return (
-    `民國${rocYear}年${month}月${day}日`
+    `中華民國${rocYear}年${month}月${day}日`
   );
 }
 
 
 /* =========================================================
-   日期字串 → Date
-   使用本地時間，避免時區造成日期偏移
+   日期字串 → 本地 Date
    ========================================================= */
 
-function parseLocalDate(dateString) {
+function parseLocalDate(
+  dateString
+) {
 
   if (!dateString) {
+
     return null;
   }
+
 
   const parts =
     dateString.split("-");
 
-  if (parts.length !== 3) {
+
+  if (
+    parts.length !== 3
+  ) {
+
     return null;
   }
+
 
   const year =
     Number(parts[0]);
 
+
   const month =
     Number(parts[1]);
 
+
   const day =
     Number(parts[2]);
+
 
   if (
     !year ||
     !month ||
     !day
   ) {
+
     return null;
   }
+
 
   return new Date(
     year,
@@ -431,14 +640,18 @@ function parseLocalDate(dateString) {
 
 
 /* =========================================================
-   日期 → M/D
+   日期 → 月/日
    ========================================================= */
 
-function formatMonthDay(date) {
+function formatMonthDay(
+  date
+) {
 
   if (!date) {
+
     return "";
   }
+
 
   return (
     `${date.getMonth() + 1}/${date.getDate()}`
@@ -450,19 +663,19 @@ function formatMonthDay(date) {
    住宿日期區間
    =========================================================
 
-   依照你指定的例子：
+   例如：
 
-   入住 9/5
+   9/5
    住 3 晚
 
-   顯示：
+   →
 
    9/5~9/7
 
-   也就是「實際住宿的第一天～最後一天」。
+   公式：
 
-   因此：
-   結束日期 = 入住日期 + 天數 - 1
+   結束日 =
+   入住日 + 天數 - 1
    ========================================================= */
 
 function getStayDateRange(
@@ -471,7 +684,10 @@ function getStayDateRange(
 ) {
 
   const start =
-    parseLocalDate(dateString);
+    parseLocalDate(
+      dateString
+    );
+
 
   const count =
     Math.max(
@@ -481,20 +697,27 @@ function getStayDateRange(
 
 
   if (!start) {
+
     return "";
   }
 
 
   if (count <= 0) {
-    return formatMonthDay(start);
+
+    return formatMonthDay(
+      start
+    );
   }
 
 
   const end =
     new Date(start);
 
+
   end.setDate(
-    end.getDate() + count - 1
+    end.getDate() +
+    count -
+    1
   );
 
 
@@ -505,13 +728,16 @@ function getStayDateRange(
 
 
 /* =========================================================
-   金額格式
+   金額
    ========================================================= */
 
-function money(value) {
+function money(
+  value
+) {
 
   const n =
     Number(value) || 0;
+
 
   return (
     "$" +
@@ -526,7 +752,21 @@ function money(value) {
 
 
 /* =========================================================
-   文字大小自動縮小
+   字體
+   ========================================================= */
+
+function setReceiptFont(
+  ctx,
+  size
+) {
+
+  ctx.font =
+    `600 ${size}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
+}
+
+
+/* =========================================================
+   自動縮小文字
    ========================================================= */
 
 function fitText(
@@ -534,7 +774,7 @@ function fitText(
   text,
   maxWidth,
   initialSize,
-  minSize = 14
+  minSize = 16
 ) {
 
   let size =
@@ -545,13 +785,17 @@ function fitText(
     size > minSize
   ) {
 
-    ctx.font =
-      `600 ${size}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
+    setReceiptFont(
+      ctx,
+      size
+    );
 
 
     if (
-      ctx.measureText(text).width <= maxWidth
+      ctx.measureText(text).width <=
+      maxWidth
     ) {
+
       break;
     }
 
@@ -586,11 +830,15 @@ function drawCentered(
     );
 
 
-  ctx.font =
-    `600 ${actualSize}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
+  setReceiptFont(
+    ctx,
+    actualSize
+  );
+
 
   ctx.textAlign =
     "center";
+
 
   ctx.textBaseline =
     "middle";
@@ -616,11 +864,15 @@ function drawRight(
   size
 ) {
 
-  ctx.font =
-    `600 ${size}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
+  setReceiptFont(
+    ctx,
+    size
+  );
+
 
   ctx.textAlign =
     "right";
+
 
   ctx.textBaseline =
     "middle";
@@ -631,6 +883,188 @@ function drawRight(
     x,
     y
   );
+}
+
+
+/* =========================================================
+   日期特殊排版
+   =========================================================
+
+   目的：
+
+   模板上方：
+
+   沐光民宿二館 免用統一發票 電子收據
+
+   大約範圍：
+
+   X = 700 ～ 1824
+
+
+   日期：
+
+   中華民國115年9月5日
+
+   也強制使用：
+
+   X = 700 ～ 1824
+
+
+   因此：
+
+   「中」會靠近「沐」
+   「日」會靠近「據」
+
+   而且整體仍然置中。
+
+   不使用一般 center，
+   而是使用「字距拉伸」。
+   ========================================================= */
+
+function drawDateStretched(
+  ctx,
+  text,
+  leftX,
+  rightX,
+  y,
+  fontSize
+) {
+
+  if (!text) {
+
+    return;
+  }
+
+
+  setReceiptFont(
+    ctx,
+    fontSize
+  );
+
+
+  ctx.textAlign =
+    "left";
+
+
+  ctx.textBaseline =
+    "middle";
+
+
+  /*
+    計算原本文字的總寬度
+  */
+
+  let naturalWidth =
+    0;
+
+
+  for (
+    const char of text
+  ) {
+
+    naturalWidth +=
+      ctx.measureText(
+        char
+      ).width;
+  }
+
+
+  /*
+    可使用的總寬度
+  */
+
+  const targetWidth =
+    rightX -
+    leftX;
+
+
+  /*
+    字與字之間需要增加多少距離
+  */
+
+  const count =
+    [...text].length;
+
+
+  let spacing =
+    0;
+
+
+  if (count > 1) {
+
+    spacing =
+      (
+        targetWidth -
+        naturalWidth
+      ) /
+      (count - 1);
+
+  }
+
+
+  /*
+    如果自然文字已經超過指定寬度，
+    自動縮小字體。
+  */
+
+  if (spacing < 0) {
+
+    const reducedSize =
+      fitText(
+        ctx,
+        text,
+        targetWidth,
+        fontSize,
+        30
+      );
+
+
+    drawCentered(
+      ctx,
+      text,
+      (
+        leftX +
+        rightX
+      ) / 2,
+      y,
+      reducedSize,
+      targetWidth
+    );
+
+
+    return;
+  }
+
+
+  /*
+    逐字繪製。
+
+    第一個字從 leftX 開始。
+
+    最後一個字會到 rightX 附近。
+  */
+
+  let x =
+    leftX;
+
+
+  for (
+    const char of text
+  ) {
+
+    ctx.fillText(
+      char,
+      x,
+      y
+    );
+
+
+    x +=
+      ctx.measureText(
+        char
+      ).width +
+      spacing;
+  }
 }
 
 
@@ -646,13 +1080,13 @@ function buildCanvas() {
   ) {
 
     throw new Error(
-      "模板圖片尚未載入。請確認 receipt-template-1.png 與 index.html 在同一層。"
+      "模板圖片尚未載入。請確認 receipt-template-1.png 與 index.html 在 GitHub main 同一層。"
     );
   }
 
 
   /* -------------------------------------------------------
-     第一層：原始模板
+     第一層：模板
      ------------------------------------------------------- */
 
   const canvas =
@@ -660,8 +1094,10 @@ function buildCanvas() {
       "canvas"
     );
 
+
   canvas.width =
     W;
+
 
   canvas.height =
     H;
@@ -677,7 +1113,10 @@ function buildCanvas() {
 
 
   /*
-    完整保留最新空白模板
+    完整保留模板。
+
+    新模板已經沒有 $0，
+    所以不需要任何擦除。
   */
 
   ctx.drawImage(
@@ -698,8 +1137,10 @@ function buildCanvas() {
       "canvas"
     );
 
+
   overlay.width =
     W;
+
 
   overlay.height =
     H;
@@ -737,18 +1178,23 @@ function buildCanvas() {
 
 
   /*
-    日期改為：
+    日期：
 
-    民國115年9月5日
+    中華民國115年9月5日
+
+    使用 60 px。
+
+    並拉寬至與模板最上方標題
+    相同的左右範圍。
   */
 
-  drawCentered(
+  drawDateStretched(
     octx,
     rocDate,
-    1253,
-    150,
-    RECEIPT_FONT_SIZE,
-    700
+    DATE_LEFT_X,
+    DATE_RIGHT_X,
+    155,
+    RECEIPT_FONT_SIZE
   );
 
 
@@ -757,17 +1203,19 @@ function buildCanvas() {
      ======================================================= */
 
   /*
-    兩者 X 完全相同。
+    兩者完全相同 X 起點。
   */
 
   const infoX =
     80;
 
+
   const titleY =
-    230;
+    235;
+
 
   const addressY =
-    275;
+    285;
 
 
   const title =
@@ -775,14 +1223,14 @@ function buildCanvas() {
 
 
   /*
-    抬頭留空時，
-    完全不顯示「抬頭：」
+    抬頭非空才顯示。
   */
 
   if (title) {
 
     const titleText =
-      "抬頭：" + title;
+      "抬頭：" +
+      title;
 
 
     const titleSize =
@@ -791,15 +1239,19 @@ function buildCanvas() {
         titleText,
         1080,
         RECEIPT_FONT_SIZE,
-        16
+        24
       );
 
 
-    octx.font =
-      `600 ${titleSize}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
+    setReceiptFont(
+      octx,
+      titleSize
+    );
+
 
     octx.textAlign =
       "left";
+
 
     octx.textBaseline =
       "middle";
@@ -813,16 +1265,17 @@ function buildCanvas() {
   }
 
 
-  /*
-    地址
-  */
+  /* =======================================================
+     地址
+     ======================================================= */
 
   const address =
     addressEl.value.trim();
 
 
   const addressText =
-    "地址：" + address;
+    "地址：" +
+    address;
 
 
   const addressSize =
@@ -831,15 +1284,19 @@ function buildCanvas() {
       addressText,
       1080,
       RECEIPT_FONT_SIZE,
-      16
+      24
     );
 
 
-  octx.font =
-    `600 ${addressSize}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
+  setReceiptFont(
+    octx,
+    addressSize
+  );
+
 
   octx.textAlign =
     "left";
+
 
   octx.textBaseline =
     "middle";
@@ -859,24 +1316,32 @@ function buildCanvas() {
   const labelX =
     1550;
 
+
   const colonX =
     1685;
+
 
   const valueX =
     1720;
 
+
   const taxY =
-    230;
+    235;
+
 
   const orderY =
-    275;
+    285;
 
 
-  octx.font =
-    `600 ${RECEIPT_FONT_SIZE}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
+  setReceiptFont(
+    octx,
+    RECEIPT_FONT_SIZE
+  );
+
 
   octx.textAlign =
     "left";
+
 
   octx.textBaseline =
     "middle";
@@ -892,11 +1357,13 @@ function buildCanvas() {
     taxY
   );
 
+
   octx.fillText(
     "：",
     colonX,
     taxY
   );
+
 
   octx.fillText(
     taxIdEl.value.trim(),
@@ -915,11 +1382,13 @@ function buildCanvas() {
     orderY
   );
 
+
   octx.fillText(
     "：",
     colonX,
     orderY
   );
+
 
   octx.fillText(
     orderNoEl.value.trim(),
@@ -929,7 +1398,7 @@ function buildCanvas() {
 
 
   /* =======================================================
-     金額
+     金額計算
      ======================================================= */
 
   const nights =
@@ -947,7 +1416,8 @@ function buildCanvas() {
 
 
   const subtotal =
-    nights * unitPrice;
+    nights *
+    unitPrice;
 
 
   /* =======================================================
@@ -960,9 +1430,9 @@ function buildCanvas() {
 
 
   /*
-    例如：
+    住宿日期：
 
-    住宿費 <9/5~9/7>
+    9/5~9/7
   */
 
   const stayRange =
@@ -990,18 +1460,21 @@ function buildCanvas() {
   const itemCenterX =
     505;
 
+
   const nightsCenterX =
     1108;
 
+
   const priceCenterX =
     1386;
+
 
   const totalRightX =
     1805;
 
 
   /*
-    第一列中心
+    第一筆資料列
   */
 
   const firstRowY =
@@ -1193,7 +1666,7 @@ function blobFromCanvas(
 
 
 /* =========================================================
-   PNG 控制 1 MB
+   PNG ≤ 1 MB
    ========================================================= */
 
 async function makePngUnder1MB() {
@@ -1210,6 +1683,10 @@ async function makePngUnder1MB() {
     );
 
 
+  /*
+    原尺寸已經小於 1 MB
+  */
+
   if (
     blob.size <=
     TARGET_MAX_BYTES
@@ -1225,7 +1702,7 @@ async function makePngUnder1MB() {
   /*
     PNG 沒有 quality。
 
-    超過 1 MB 時自動縮小。
+    超過 1 MB 時縮小。
   */
 
   let scale =
@@ -1245,19 +1722,25 @@ async function makePngUnder1MB() {
     c.width =
       Math.max(
         1,
-        Math.round(W * scale)
+        Math.round(
+          W * scale
+        )
       );
 
 
     c.height =
       Math.max(
         1,
-        Math.round(H * scale)
+        Math.round(
+          H * scale
+        )
       );
 
 
     const cx =
-      c.getContext("2d");
+      c.getContext(
+        "2d"
+      );
 
 
     cx.drawImage(
@@ -1288,7 +1771,8 @@ async function makePngUnder1MB() {
     }
 
 
-    scale -= 0.05;
+    scale -=
+      0.05;
   }
 
 
@@ -1299,7 +1783,7 @@ async function makePngUnder1MB() {
 
 
 /* =========================================================
-   JPG 控制 1 MB
+   JPG ≤ 1 MB
    ========================================================= */
 
 async function makeJpgUnder1MB() {
@@ -1321,6 +1805,10 @@ async function makeJpgUnder1MB() {
       original;
 
 
+    /*
+      JPG 不支援透明背景。
+    */
+
     if (
       scale !== 1
     ) {
@@ -1334,14 +1822,18 @@ async function makeJpgUnder1MB() {
       canvas.width =
         Math.max(
           1,
-          Math.round(W * scale)
+          Math.round(
+            W * scale
+          )
         );
 
 
       canvas.height =
         Math.max(
           1,
-          Math.round(H * scale)
+          Math.round(
+            H * scale
+          )
         );
 
 
@@ -1350,11 +1842,6 @@ async function makeJpgUnder1MB() {
           "2d"
         );
 
-
-      /*
-        JPG 沒有透明背景。
-        只有輸出 JPG 時才使用白色背景。
-      */
 
       ctx.fillStyle =
         "#fff";
@@ -1377,6 +1864,10 @@ async function makeJpgUnder1MB() {
       );
     }
 
+
+    /*
+      逐步降低 JPG 品質。
+    */
 
     for (
       let quality = 0.92;
@@ -1406,7 +1897,8 @@ async function makeJpgUnder1MB() {
     }
 
 
-    scale -= 0.05;
+    scale -=
+      0.05;
   }
 
 
@@ -1455,7 +1947,7 @@ function safeFilename(
 
 
 /* =========================================================
-   下載檔案
+   下載
    ========================================================= */
 
 function downloadBlob(
@@ -1516,12 +2008,14 @@ async function download(
   const pngButton =
     $("downloadPng");
 
+
   const jpgButton =
     $("downloadJpg");
 
 
   pngButton.disabled =
     true;
+
 
   jpgButton.disabled =
     true;
@@ -1607,6 +2101,7 @@ async function download(
     pngButton.disabled =
       false;
 
+
     jpgButton.disabled =
       false;
   }
@@ -1614,7 +2109,7 @@ async function download(
 
 
 /* =========================================================
-   下載按鈕
+   按鈕
    ========================================================= */
 
 $("downloadPng")
